@@ -37,4 +37,8 @@ export default defineConfig({
       renderer: {},
     }),
   ],
+  server: {
+    host: pkg.env.VITE_DEV_SERVER_HOST,
+    port: pkg.env.VITE_DEV_SERVER_PORT,
+  }
 })
