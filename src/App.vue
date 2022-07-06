@@ -1,41 +1,107 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts" setup>
+import { ref, h, computed } from "vue";
+import { useRoute } from "vue-router";
+import { RouterLink } from "vue-router";
+import { MenuInst, MenuOption } from "naive-ui";
+import { useOsTheme, darkTheme, lightTheme } from "naive-ui";
+
+const theme = computed(() =>
+  useOsTheme().value === "dark" ? darkTheme : lightTheme
+);
+
+const route = useRoute();
+
+const menuRef = ref<MenuInst | null>(null);
+const menuUpdate = () => {
+  menuRef.value?.showOption(route.name as any);
+};
+const menuOptions: MenuOption[] = [
+  {
+    label: () => h(RouterLink, { to: "/" }, "Home"),
+    key: "home",
+  },
+  {
+    label: () => h(RouterLink, { to: "/speech" }, "Speech"),
+    key: "speech",
+  },
+  {
+    label: "Settings",
+    children: [
+      {
+        label: () => h(RouterLink, { to: "/settings/azure" }, "Azure"),
+        key: "settings-azure",
+      },
+      {
+        label: () => h(RouterLink, { to: "/settings/wwise" }, "Wwise"),
+        key: "settings-wwise",
+      },
+    ],
+  },
+  {
+    label: () => h(RouterLink, { to: "/about" }, "About"),
+    key: "about",
+  },
+];
 </script>
 
 <template>
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <n-config-provider :theme="theme">
+    <n-global-style />
+    <n-loading-bar-provider>
+      <n-message-provider>
+        <n-notification-provider>
+          <n-dialog-provider>
+            <n-layout position="absolute">
+              <!-- dev -->
+              <n-watermark
+                content="Demo Version"
+                cross
+                fullscreen
+                :font-size="16"
+                :line-height="16"
+                :width="384"
+                :height="384"
+                :x-offset="12"
+                :y-offset="60"
+                :rotate="-15"
+              />
+              <!-- dev -->
+              <n-layout has-sider position="absolute" style="bottom: 20px">
+                <n-layout-sider bordered>
+                  <n-space justify="center" style="padding: 24px">
+                    <n-avatar
+                      :size="96"
+                      :style="{
+                        color: 'white',
+                        backgroundColor: 'black',
+                        fontSize: '60px',
+                      }"
+                      >X
+                    </n-avatar>
+                  </n-space>
+                  <n-menu
+                    ref="menuRef"
+                    :value="route.name"
+                    :options="menuOptions"
+                    :accordion="true"
+                    @load="menuUpdate"
+                  />
+                </n-layout-sider>
+                <n-layout-content content-style="padding: 24px">
+                  <RouterView></RouterView>
+                </n-layout-content>
+              </n-layout>
+              <n-layout-footer
+                bordered
+                position="absolute"
+                style="height: 20px"
+              >
+                {{ route.name }}
+              </n-layout-footer>
+            </n-layout>
+          </n-dialog-provider>
+        </n-notification-provider>
+      </n-message-provider>
+    </n-loading-bar-provider>
+  </n-config-provider>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-.logo-box {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
-.logo-box span {
-  width: 74px;
-}
-.static-public {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.static-public code {
-  background-color: #eee;
-  padding: 2px 4px;
-  margin: 0 4px;
-  border-radius: 4px;
-  color: #304455;
-}
-</style>
