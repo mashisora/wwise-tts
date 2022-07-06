@@ -1,9 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-// import './samples/node-api'
+import { createApp } from "vue";
+import naive from "naive-ui";
+import App from "./App.vue";
+import router from "./router";
 
-createApp(App)
-  .mount('#app')
-  .$nextTick(() => {
-    postMessage({ payload: 'removeLoading' }, '*')
-  })
+const app = createApp(App);
+
+app.use(router);
+app.use(naive);
+app.mount("#app");
