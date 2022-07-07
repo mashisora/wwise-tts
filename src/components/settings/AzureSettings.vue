@@ -15,22 +15,20 @@
     </n-form>
     <n-space justify="end">
       <n-button @click="azureSettings.$reset()"> Reset </n-button>
-      <n-button type="primary" @click=""> Apply </n-button>
+      <n-button type="primary" :loading="loadingRef" @click="handleApplyClick">
+        Apply
+      </n-button>
     </n-space>
-
-    <!-- debug -->
-    <p>{{ azureSettings.key }}</p>
-    <p>{{ azureSettings.region }}</p>
-    <!-- debug -->
   </n-card>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { FormInst, FormRules, FormItemRule } from "naive-ui";
+import { FormInst } from "naive-ui";
 import { useAzureSettings } from "../../stores/settings";
-import { ipcRenderer } from "electron";
+import { useAzureInfo } from "../../stores/speech";
 import { useMessage } from "naive-ui";
+import axios from "axios";
 
 const azureSettings = useAzureSettings();
 const azureSettingsRef = ref<FormInst | null>(null);
@@ -45,4 +43,33 @@ const regions = [
     value: "japanwest",
   },
 ];
+
+const message = useMessage();
+const loadingRef = ref(false);
+function handleApplyClick() {
+  if (azureSettings.key && azureSettings.region) {
+    loadingRef.value = true;
+    axios
+      .get("/cognitiveservices/voices/list", {
+        baseURL: `https://${azureSettings.region}.tts.speech.microsoft.com`,
+        headers: {
+          "Ocp-Apim-Subscription-Key": azureSettings.key,
+        },
+      })
+      .then((res) => {
+        azureInfo.voices = res.data;
+        message.success("SUCCESS");
+      })
+      .catch((err) => {
+        message.error("Faild");
+      })
+      .then(() => {
+        loadingRef.value = false;
+      });
+  } else {
+    message.error("VOID");
+  }
+}
+
+const azureInfo = useAzureInfo();
 </script>

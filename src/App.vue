@@ -85,3 +85,9 @@ const menuOptions: MenuOption[] = [
     </n-layout>
   </AppProvider>
 </template>
+
+<style>
+body {
+  overflow: hidden;
+}
+</style>
