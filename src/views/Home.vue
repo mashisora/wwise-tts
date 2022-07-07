@@ -1,7 +1,16 @@
 <script lang="ts" setup>
+import { useWwiseSettings, useAzureSettings } from "../stores/settings";
+
+const azureSettings = useAzureSettings();
+const wwiseSettings = useWwiseSettings();
 </script>
 
 <template>
-<h1>Home</h1>
+  <n-card title="Azure">
+    <p>{{ azureSettings.key }}</p>
+    <p>{{ azureSettings.region }}</p>
+  </n-card>
+  <n-card title="Wwise">
+    <p>{{ wwiseSettings.url }}</p>
+  </n-card>
 </template>
-

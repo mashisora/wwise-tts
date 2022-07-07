@@ -11,18 +11,8 @@ const routes = [
   },
   {
     path: "/settings",
-    children: [
-      {
-        path: "azure",
-        name: "settings-azure",
-        component: () => import("../views/settings/AzureSettings.vue"),
-      },
-      {
-        path: "wwise",
-        name: "settings-wwise",
-        component: () => import("../views/settings/WwiseSettings.vue"),
-      },
-    ],
+    name: "settings",
+    component: () => import("../views/Settings.vue"),
   },
   {
     path: "/about",

@@ -1,5 +1,5 @@
 <script lang="ts" setup></script>
 
 <template>
-  <h1>About</h1>
+  <n-card title="About"> </n-card>
 </template>

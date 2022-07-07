@@ -1,3 +1,24 @@
+<template>
+  <n-card title="Text to Speech">
+    <n-form ref="speechRef" :model="speechValue">
+      <n-form-item path="key" label="Text">
+        <n-input v-model:value="speechValue.text" type="textarea" />
+      </n-form-item>
+      <n-form-item path="region" label="Voice">
+        <n-select v-model:value="speechValue.voice" :options="voices" />
+      </n-form-item>
+      <n-space justify="end">
+        <n-button> Convert </n-button>
+        <n-button> Play </n-button>
+        <n-button type="primary" strong> Import </n-button>
+      </n-space>
+    </n-form>
+  </n-card>
+
+  <p>{{ speechValue.text }}</p>
+  <p>{{ speechValue.voice }}</p>
+</template>
+
 <script lang="ts" setup>
 import { ref } from "vue";
 import { FormInst } from "naive-ui";
@@ -23,25 +44,3 @@ const voices = [
   },
 ];
 </script>
-
-<template>
-  <h1>Text to Speech</h1>
-  <span>{{ text }}</span>
-
-  <n-form ref="speechRef" :model="speechValue">
-    <n-form-item path="key" label="Text">
-      <n-input v-model:value="text" type="textarea" />
-    </n-form-item>
-    <n-form-item path="region" label="Voice">
-      <n-select v-model:value="speechValue.voice" :options="voices" />
-    </n-form-item>
-    <n-space justify="end">
-      <n-button> Convert </n-button>
-      <n-button> Play </n-button>
-      <n-button type="primary"> Import </n-button>
-    </n-space>
-  </n-form>
-
-  <p>{{ speechValue.text }}</p>
-  <p>{{ speechValue.voice }}</p>
-</template>
