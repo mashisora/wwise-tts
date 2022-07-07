@@ -3,6 +3,8 @@ import { release } from "os";
 import * as path from "path";
 import wwise from "./wwise";
 import msspeech from "./msspeech";
+import fs from "fs";
+import { promise } from "when";
 
 console.log(app.getPath("userData"));
 
@@ -103,24 +105,15 @@ ipcMain.handle("open-win", (event, arg) => {
 });
 
 ipcMain.handle("wwise:getInfo", async (event, args) => {
-  const info = await wwise.getInfo();
+  const info = await wwise.getInfo(args);
   return info;
 });
 
-ipcMain.on("msspeech:synthesizeAudio", async (event, args) => {
-  const [key, region, text, voice, format, fileName] = args;
-  const synthesizer = msspeech.synthesizeAudio(
-    key,
-    region,
-    text,
-    voice,
-    format,
-    fileName
-  );
-  synthesizer.synthesisCompleted = () => {
-    event.reply("msspeech:synthesizeAudio", true);
-  };
-  synthesizer.SynthesisCanceled = () => {
-    event.reply("msspeech:synthesizeAudio", false);
-  };
+ipcMain.handle("wwise:importAudio", async (event, args) => {
+  await wwise.importAudio(args);
+});
+
+ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
+  const path = await msspeech.synthesizeAudio(args);
+  return path;
 });

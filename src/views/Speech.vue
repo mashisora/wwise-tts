@@ -1,50 +1,26 @@
 <template>
+  {{ speechConfig.fileName }}
   <n-card title="Text to Speech">
-    <n-form ref="speechRef" :model="speech">
+    <n-form ref="speechConfigRef" :model="speechConfig">
       <n-form-item path="key" label="Text">
-        <n-input v-model:value="speech.text" type="textarea" />
+        <n-input v-model:value="speechConfig.text" type="textarea" />
       </n-form-item>
       <n-form-item path="voice" label="Voice">
-        <n-select v-model:value="speech.voice" :options="voices" filterable />
+        <n-select
+          v-model:value="speechConfig.voice"
+          :options="voices"
+          filterable
+        />
       </n-form-item>
       <n-form-item path="format" label="Format">
-        <n-select v-model:value="speech.format" :options="formats" />
+        <n-select v-model:value="speechConfig.format" :options="formats" />
       </n-form-item>
       <n-form-item path="fileName" label="File Name">
-        <n-input v-model:value="speech.fileName" />
+        <n-input-group>
+          <n-input v-model:value="speechConfig.fileName" />
+          <n-input-group-label>.wav</n-input-group-label>
+        </n-input-group>
       </n-form-item>
-
-      <!-- <n-form-item path="speed" label="Speed(WIP)">
-        <n-grid x-gap="12" cols="5">
-          <n-grid-item span="4" style="padding: 5px">
-            <n-slider
-              v-model:value="speech.speed"
-              :min="0.5"
-              :max="2"
-              :step="0.01"
-            />
-          </n-grid-item>
-          <n-grid-item>
-            <n-input v-model:value="speech.speed" size="small" />
-          </n-grid-item>
-        </n-grid>
-      </n-form-item>
-      <n-form-item path="pitch" label="Pitch(WIP)">
-        <n-grid x-gap="12" cols="5">
-          <n-grid-item span="4" style="padding: 5px">
-            <n-slider
-              v-model:value="speech.pitch"
-              :min="0.5"
-              :max="2"
-              :step="0.01"
-            />
-          </n-grid-item>
-          <n-grid-item>
-            <n-input v-model:value="speech.pitch" size="small" />
-          </n-grid-item>
-        </n-grid>
-      </n-form-item> -->
-
       <n-space justify="end">
         <n-button
           :loading="synthesizeLoadingRef"
@@ -52,71 +28,77 @@
         >
           Synthesize
         </n-button>
-        <n-button> Play </n-button>
-        <n-button type="primary" strong> Import </n-button>
+        <n-button @click="handlePlayClick"> Play </n-button>
+        <n-button type="primary" @click="handleImportClick"> Import </n-button>
       </n-space>
     </n-form>
   </n-card>
-
-  <p>{{ speech.text }}</p>
-  <p>{{ speech.voice }}</p>
-  <p>{{ speech.format }}</p>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { FormInst } from "naive-ui";
-import { useSpeech, useAzureInfo } from "../stores/speech";
-import { useAzureSettings } from "../stores/settings";
+import { useSpeechConfig, useAzureInfo } from "../stores/speech";
+import { useAzureSettings, useWwiseSettings } from "../stores/settings";
 import { useMessage } from "naive-ui";
 import { ipcRenderer } from "electron";
-import { removeAllListeners } from "process";
 
-const speechRef = ref<FormInst | null>(null);
+const speechConfigRef = ref<FormInst | null>(null);
 const synthesizeLoadingRef = ref(false);
 
-const speech = useSpeech();
+const speechConfig = useSpeechConfig();
 const azureInfo = useAzureInfo();
 const azureSettings = useAzureSettings();
+const wwiseSettings = useWwiseSettings();
 
 const voices = azureInfo.voices.map((item) => ({
   label: item.LocalName,
   value: item.ShortName,
 }));
-const formats = azureInfo.formats.map((item) => ({
-  label: item,
-  value: item,
-}));
+const formats = azureInfo.formats;
 
 const message = useMessage();
+
 function handleSynthesizeClick() {
   synthesizeLoadingRef.value = true;
-  ipcRenderer.send("msspeech:synthesizeAudio", [
-    azureSettings.key,
-    azureSettings.region,
-    speech.text,
-    speech.voice,
-    speech.format,
-    speech.fileName,
-  ]);
+  const key = azureSettings.key;
+  const region = azureSettings.region;
+  const text = speechConfig.text;
+  const voice = speechConfig.voice;
+  const format = speechConfig.format;
+  const fileName = speechConfig.fileName;
+
+  if (key && region && text && voice && format && fileName) {
+    const args = [key, region, text, voice, format, fileName];
+    ipcRenderer
+      .invoke("msspeech:synthesizeAudio", args)
+      .then((res) => {
+        synthesizeLoadingRef.value = false;
+        message.success("Audio synthesize successful");
+      })
+      .catch((err) => {
+        synthesizeLoadingRef.value = false;
+        message.error("Audio synthesize error");
+      });
+  }
 }
 
-// ipcRenderer
-//   .invoke("msspeech:synthesizeAudio", [
-//     azureSettings.key,
-//     azureSettings.region,
-//     speech.text,
-//     speech.voice,
-//     speech.format,
-//     speech.fileName,
-//   ])
-//   .then((res) => {
-//     console.log(res);
-//     synthesizeLoadingRef.value = false;
-//     message.success("Synthesize Success");
-//   })
-//   .catch((err) => {
-//     synthesizeLoadingRef.value = false;
-//     message.error("ERR");
-//   });
+function handlePlayClick() {}
+
+function handleImportClick() {
+  const url = wwiseSettings.url;
+  const fileName = speechConfig.fileName;
+
+  if (url && fileName) {
+    const args = [url, fileName];
+    ipcRenderer
+      .invoke("wwise:importAudio", args)
+      .then((res) => {
+        message.success("Import successful");
+      })
+      .catch((err) => {
+        message.error("Import error");
+      });
+  }
+}
 </script>

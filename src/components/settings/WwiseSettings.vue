@@ -23,15 +23,17 @@ const wwiseSettings = useWwiseSettings();
 const wwiseSettingsRef = ref<FormInst | null>(null);
 
 const message = useMessage();
-function handleApplyClick(e: MouseEvent) {
-  if (wwiseSettings.url) {
+function handleApplyClick() {
+  const url = wwiseSettings.url;
+  if (url) {
+    const args = [url];
     ipcRenderer
-      .invoke("wwise:getInfo")
+      .invoke("wwise:getInfo", args)
       .then((res) => {
         message.success(`${res.displayName} ${res.version.displayName}`);
       })
       .catch((err) => {
-        message.error("cannot connect to Wwise");
+        message.error("Cannot connect to Wwise");
       });
   }
 }
