@@ -1,25 +1,25 @@
 import waapi from "waapi-client";
-import path from "path";
+import { app } from "electron";
 import { ak } from "waapi";
 
 const wwise = {
-  getInfo: async () => {
+  getInfo: async ([url]: string[]) => {
     try {
-      let client = await waapi.connect("ws://127.0.0.1:8080/waapi");
+      let client = await waapi.connect(url);
       const wwiseInfo = await client.call(ak.wwise.core.getInfo, {});
       await client.disconnect();
       return wwiseInfo;
-    } catch (err) {}
+    } catch (e) {
+      console.log(e);
+    }
   },
 
-  importAudio: async (audioFilePath: string, objectName: string) => {
+  importAudio: async ([url, fileName]: string[]) => {
     try {
-      // Connect to WA via WAAPI.
-      let client = await waapi.connect("ws://127.0.0.1:8080/waapi");
-      const wwiseInfo = await client.call(ak.wwise.core.getInfo, {});
-      console.log(`${wwiseInfo.displayName} ${wwiseInfo.version.displayName}!`);
+      const userData = app.getPath("userData");
+      const path = `${userData}/${fileName}.wav`;
 
-      // Get selected object path.
+      let client = await waapi.connect(url);
       const selectedObjectsInfo = await client.call(
         ak.wwise.ui.getSelectedObjects,
         {},
@@ -27,16 +27,14 @@ const wwise = {
       );
       const selectedObjectPath = selectedObjectsInfo.objects[0].path;
 
-      // Import audio file as child object of selected object.
       await client.call(ak.wwise.core.audio.import_, {
         imports: [
           {
-            objectPath: selectedObjectPath + "\\<Sound>" + objectName,
-            audioFile: path.resolve(audioFilePath),
+            objectPath: `${selectedObjectPath}\\<Sound>${fileName}`,
+            audioFile: path,
           },
         ],
       });
-
       await client.disconnect();
     } catch (e) {
       console.log(e);

@@ -6,11 +6,10 @@ const wwiseSettings = useWwiseSettings();
 </script>
 
 <template>
-  <n-card title="Azure">
-    <p>{{ azureSettings.key }}</p>
-    <p>{{ azureSettings.region }}</p>
-  </n-card>
-  <n-card title="Wwise">
-    <p>{{ wwiseSettings.url }}</p>
+  <n-card title="README">
+    <p>草稿阶段，没写文档</p>
+    <p>bug很多，也不太好用</p>
+    <p>使用前进入设置页输入 key 和 region 连接至 Azure</p>
+    <p>并测试 Wwise 连通性</p>
   </n-card>
 </template>

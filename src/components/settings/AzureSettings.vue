@@ -10,7 +10,11 @@
         />
       </n-form-item>
       <n-form-item path="region" label="Region">
-        <n-select v-model:value="azureSettings.region" :options="regions" />
+        <n-select
+          v-model:value="azureSettings.region"
+          :options="regions"
+          filterable
+        />
       </n-form-item>
     </n-form>
     <n-space justify="end">
@@ -31,45 +35,39 @@ import { useMessage } from "naive-ui";
 import axios from "axios";
 
 const azureSettings = useAzureSettings();
+const azureInfo = useAzureInfo();
 const azureSettingsRef = ref<FormInst | null>(null);
 
-const regions = [
-  {
-    label: "Japan East",
-    value: "japaneast",
-  },
-  {
-    label: "Japan West",
-    value: "japanwest",
-  },
-];
+const regions = azureInfo.regions;
 
 const message = useMessage();
 const loadingRef = ref(false);
+
 function handleApplyClick() {
-  if (azureSettings.key && azureSettings.region) {
+  const key = azureSettings.key;
+  const region = azureSettings.region;
+
+  if (key && region) {
     loadingRef.value = true;
     axios
       .get("/cognitiveservices/voices/list", {
-        baseURL: `https://${azureSettings.region}.tts.speech.microsoft.com`,
+        baseURL: `https://${region}.tts.speech.microsoft.com`,
         headers: {
-          "Ocp-Apim-Subscription-Key": azureSettings.key,
+          "Ocp-Apim-Subscription-Key": key,
         },
       })
       .then((res) => {
         azureInfo.voices = res.data;
-        message.success("SUCCESS");
+        message.success("Get voice list successful");
       })
       .catch((err) => {
-        message.error("Faild");
+        message.error("Get voice list failed");
       })
       .then(() => {
         loadingRef.value = false;
       });
   } else {
-    message.error("VOID");
+    message.error("Please input key and select region");
   }
 }
-
-const azureInfo = useAzureInfo();
 </script>
