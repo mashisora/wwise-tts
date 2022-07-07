@@ -1,9 +1,10 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import { release } from "os";
 import * as path from "path";
-import { testWwise } from "./wwiseFun";
+import wwise from "./wwise";
+import msspeech from "./msspeech";
 
-import * as msspeech from "microsoft-cognitiveservices-speech-sdk";
+console.log(app.getPath("userData"));
 
 // Set application name for Windows 10+ notifications
 if (process.platform === "win32") app.setAppUserModelId(app.getName());
@@ -101,16 +102,25 @@ ipcMain.handle("open-win", (event, arg) => {
   }
 });
 
-// //IPC TEST!!!!!!!!!!
-// ipcMain.on("message-test", (event, arg) => {
-//   console.log("111111111");
-//   testWwise().then((ver) => {
-//     event.reply("message-test", ver);
-//   });
-// });
+ipcMain.handle("wwise:getInfo", async (event, args) => {
+  const info = await wwise.getInfo();
+  return info;
+});
 
-// const key = "fd4714df903a4b37bca5950c67336caa";
-// const region = "japaneast";
-// const speechConfig = msspeech.SpeechConfig.fromSubscription(key, region);
-// speechConfig.speechSynthesisOutputFormat =
-//   msspeech.SpeechSynthesisOutputFormat.Riff16Khz16BitMonoPcm;
+ipcMain.on("msspeech:synthesizeAudio", async (event, args) => {
+  const [key, region, text, voice, format, fileName] = args;
+  const synthesizer = msspeech.synthesizeAudio(
+    key,
+    region,
+    text,
+    voice,
+    format,
+    fileName
+  );
+  synthesizer.synthesisCompleted = () => {
+    event.reply("msspeech:synthesizeAudio", true);
+  };
+  synthesizer.SynthesisCanceled = () => {
+    event.reply("msspeech:synthesizeAudio", false);
+  };
+});

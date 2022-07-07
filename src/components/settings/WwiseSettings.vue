@@ -1,51 +1,38 @@
 <template>
   <n-card title="Wwise Settings">
-    <n-form
-      ref="wwiseSettingsRef"
-      :model="wwiseSettings"
-      :rules="wwiseSettingsRules"
-    >
+    <n-form ref="wwiseSettingsRef" :model="wwiseSettings">
       <n-form-item label="WAAPI URL" path="url">
         <n-input v-model:value="wwiseSettings.url" />
       </n-form-item>
-      <n-space justify="end">
-        <n-button @click="wwiseSettings.$reset()"> Reset </n-button>
-        <n-button type="primary" @click="handleApplyClick"> Apply </n-button>
-      </n-space>
     </n-form>
-
-    <!-- debug -->
-    <p>{{ wwiseSettings.url }}</p>
-    <!-- debug -->
+    <n-space justify="end">
+      <n-button @click="wwiseSettings.$reset()"> Reset </n-button>
+      <n-button type="primary" @click="handleApplyClick"> Apply </n-button>
+    </n-space>
   </n-card>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { FormInst, FormRules, FormItemRule } from "naive-ui";
+import { FormInst } from "naive-ui";
 import { useWwiseSettings } from "../../stores/settings";
-import { ipcRenderer } from "electron";
 import { useMessage } from "naive-ui";
+import { ipcRenderer } from "electron";
 
 const wwiseSettings = useWwiseSettings();
 const wwiseSettingsRef = ref<FormInst | null>(null);
 
-// TODO: find a better pattern
-const wwiseSettingsRules: FormRules = {
-  url: {
-    validator(rule: FormItemRule, value: string) {
-      if (value && !/^\d*$/.test(value)) {
-        return new Error("年龄应该为整数");
-      }
-      return true;
-    },
-    trigger: ["input", "blur"],
-  },
-};
 const message = useMessage();
-
 function handleApplyClick(e: MouseEvent) {
-  e.preventDefault();
-  message.success("Success");
+  if (wwiseSettings.url) {
+    ipcRenderer
+      .invoke("wwise:getInfo")
+      .then((res) => {
+        message.success(`${res.displayName} ${res.version.displayName}`);
+      })
+      .catch((err) => {
+        message.error("cannot connect to Wwise");
+      });
+  }
 }
 </script>
