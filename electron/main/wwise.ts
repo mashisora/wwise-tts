@@ -10,7 +10,7 @@ const wwise = {
       await client.disconnect();
       return wwiseInfo;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   },
 
@@ -37,7 +37,7 @@ const wwise = {
       });
       await client.disconnect();
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   },
 };

@@ -1,10 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
-import { release } from "os";
-import * as path from "path";
+import path from "path";
 import wwise from "./wwise";
 import msspeech from "./msspeech";
-import fs from "fs";
-import { promise } from "when";
 
 console.log(app.getPath("userData"));
 
