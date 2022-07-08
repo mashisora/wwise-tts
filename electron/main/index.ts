@@ -1,7 +1,5 @@
 import { app, BrowserWindow, shell, ipcMain } from "electron";
 import path from "path";
-import wwise from "./wwise";
-import msspeech from "./msspeech";
 
 console.log(app.getPath("userData"));
 
@@ -101,16 +99,4 @@ ipcMain.handle("open-win", (event, arg) => {
   }
 });
 
-ipcMain.handle("wwise:getInfo", async (event, args) => {
-  const info = await wwise.getInfo(args);
-  return info;
-});
-
-ipcMain.handle("wwise:importAudio", async (event, args) => {
-  await wwise.importAudio(args);
-});
-
-ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
-  const path = await msspeech.synthesizeAudio(args);
-  return path;
-});
+import("./ipc");
