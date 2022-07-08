@@ -1,8 +1,8 @@
 {
   "name": "wwise-tts",
   "version": "0.0.1",
-  "main": "dist/electron/main/index.js",
-  "description": "Import TTS Audio into Wwise.",
+  "main": "dist/main/index.js",
+  "description": "A Wwise speech audio importer using Microsoft TTS service.",
   "author": "mashisora <mashisora@outlook.com>",
   "license": "MIT",
   "private": true,
@@ -14,27 +14,34 @@
     "node": ">=14.17.0"
   },
   "dependencies": {
+    "microsoft-cognitiveservices-speech-sdk": "^1.22.0",
     "waapi": "^2017.2.0",
-    "waapi-client": "^2017.2.1",
-    "microsoft-cognitiveservices-speech-sdk": "^1.22.0"
+    "waapi-client": "^2017.2.1"
   },
   "devDependencies": {
     "@vicons/fluent": "^0.12.0",
     "@vitejs/plugin-vue": "^2.3.3",
     "axios": "^0.27.2",
-    "electron": "^19.0.7",
+    "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
-    "naive-ui": "^2.30.8",
+    "naive-ui": "^2.31.0",
     "pinia": "^2.0.14",
     "typescript": "^4.7.4",
-    "vite": "^2.9.13",
-    "vite-plugin-electron": "^0.6.2",
+    "vite": "^2.9.14",
+    "vite-plugin-electron": "^0.7.2",
     "vue": "^3.2.37",
     "vue-router": "^4.1.1",
-    "vue-tsc": "^0.38.2"
+    "vue-tsc": "^0.38.3"
   },
   "env": {
     "VITE_DEV_SERVER_HOST": "127.0.0.1",
     "VITE_DEV_SERVER_PORT": 3000
-  }
+  },
+  "keywords": [
+    "electron",
+    "tts",
+    "wwise",
+    "waapi",
+    "azure"
+  ]
 }

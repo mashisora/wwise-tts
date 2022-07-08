@@ -9,4 +9,8 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(naive);
-app.mount("#app");
+
+app.mount("#app")
+  .$nextTick(() => {
+    postMessage({ payload: 'removeLoading' }, '*')
+  })

@@ -29,3 +29,9 @@ const theme = computed(() => (osTheme.value === "dark" ? darkTheme : null));
     </n-loading-bar-provider>
   </n-config-provider>
 </template>
+
+<style>
+body {
+  overflow: hidden;
+}
+</style>
