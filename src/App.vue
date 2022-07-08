@@ -60,18 +60,20 @@ const menuOptions: MenuOption[] = [
       <!-- dev -->
       <n-layout has-sider position="absolute" style="bottom: 20px">
         <n-layout-sider bordered width="200">
-          <n-space justify="center" style="padding: 24px">
-            <n-avatar
-              :size="96"
-              :style="{
-                color: 'white',
-                backgroundColor: 'black',
-                fontSize: '60px',
-              }"
-              >X
-            </n-avatar>
-          </n-space>
-          <n-menu :value="route.name" :options="menuOptions" />
+          <n-scrollbar>
+            <n-space justify="center" style="padding: 24px">
+              <n-avatar
+                :size="96"
+                :style="{
+                  color: 'white',
+                  backgroundColor: 'black',
+                  fontSize: '60px',
+                }"
+                >X
+              </n-avatar>
+            </n-space>
+            <n-menu :value="route.name" :options="menuOptions" />
+          </n-scrollbar>
         </n-layout-sider>
         <n-scrollbar>
           <n-layout-content content-style="padding: 24px">
@@ -85,9 +87,3 @@ const menuOptions: MenuOption[] = [
     </n-layout>
   </AppProvider>
 </template>
-
-<style>
-body {
-  overflow: hidden;
-}
-</style>
