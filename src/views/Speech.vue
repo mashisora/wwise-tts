@@ -8,12 +8,15 @@
       <n-form-item path="voice" label="Voice">
         <n-select
           v-model:value="speechConfig.voice"
-          :options="voices"
+          :options="azureInfo.voices"
           filterable
         />
       </n-form-item>
       <n-form-item path="format" label="Format">
-        <n-select v-model:value="speechConfig.format" :options="formats" />
+        <n-select
+          v-model:value="speechConfig.format"
+          :options="azureInfo.formats"
+        />
       </n-form-item>
       <n-form-item path="fileName" label="File Name">
         <n-input-group>
@@ -23,13 +26,20 @@
       </n-form-item>
       <n-space justify="end">
         <n-button
-          :loading="synthesizeLoadingRef"
+          :loading="loadingRef"
+          :disabled="!azureSettings.status"
           @click="handleSynthesizeClick"
         >
           Synthesize
         </n-button>
-        <n-button @click="handlePlayClick"> Play </n-button>
-        <n-button type="primary" @click="handleImportClick"> Import </n-button>
+        <n-button disabled @click="handlePlayClick"> Play(WIP) </n-button>
+        <n-button
+          type="primary"
+          :disabled="!wwiseSettings.status"
+          @click="handleImportClick"
+        >
+          Import
+        </n-button>
       </n-space>
     </n-form>
   </n-card>
@@ -44,23 +54,17 @@ import { useMessage } from "naive-ui";
 import { ipcRenderer } from "electron";
 
 const speechConfigRef = ref<FormInst | null>(null);
-const synthesizeLoadingRef = ref(false);
+const loadingRef = ref(false);
 
 const speechConfig = useSpeechConfig();
 const azureInfo = useAzureInfo();
 const azureSettings = useAzureSettings();
 const wwiseSettings = useWwiseSettings();
 
-const voices = azureInfo.voices.map((item) => ({
-  label: item.LocalName,
-  value: item.ShortName,
-}));
-const formats = azureInfo.formats;
-
 const message = useMessage();
 
 function handleSynthesizeClick() {
-  synthesizeLoadingRef.value = true;
+  loadingRef.value = true;
   const key = azureSettings.key;
   const region = azureSettings.region;
   const text = speechConfig.text;
@@ -73,11 +77,11 @@ function handleSynthesizeClick() {
     ipcRenderer
       .invoke("msspeech:synthesizeAudio", args)
       .then((res) => {
-        synthesizeLoadingRef.value = false;
+        loadingRef.value = false;
         message.success("Audio synthesize successful");
       })
       .catch((err) => {
-        synthesizeLoadingRef.value = false;
+        loadingRef.value = false;
         message.error("Audio synthesize error");
       });
   }

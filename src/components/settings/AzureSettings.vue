@@ -6,21 +6,42 @@
           v-model:value="azureSettings.key"
           type="password"
           show-password-on="mousedown"
-          @keydown.enter.prevent
+          :disabled="azureSettings.status"
         />
       </n-form-item>
       <n-form-item path="region" label="Region">
         <n-select
           v-model:value="azureSettings.region"
-          :options="regions"
+          :options="azureInfo.regions"
+          :disabled="azureSettings.status"
           filterable
         />
       </n-form-item>
     </n-form>
     <n-space justify="end">
-      <n-button @click="azureSettings.$reset()"> Reset </n-button>
-      <n-button type="primary" :loading="loadingRef" @click="handleApplyClick">
-        Apply
+      <n-button
+        type="warning"
+        ghost
+        :disabled="azureSettings.status"
+        @click="azureSettings.$reset()"
+      >
+        Reset
+      </n-button>
+      <n-button
+        type="error"
+        ghost
+        :disabled="!azureSettings.status"
+        @click="handleDisconnectClick"
+      >
+        Disconnect
+      </n-button>
+      <n-button
+        type="primary"
+        :loading="loadingRef"
+        :disabled="azureSettings.status"
+        @click="handleConnectClick"
+      >
+        Connect
       </n-button>
     </n-space>
   </n-card>
@@ -38,12 +59,15 @@ const azureSettings = useAzureSettings();
 const azureInfo = useAzureInfo();
 const azureSettingsRef = ref<FormInst | null>(null);
 
-const regions = azureInfo.regions;
-
 const message = useMessage();
 const loadingRef = ref(false);
 
-function handleApplyClick() {
+function handleDisconnectClick() {
+  azureInfo.voices = [];
+  azureSettings.status = false;
+  message.info("Disconnected");
+}
+function handleConnectClick() {
   const key = azureSettings.key;
   const region = azureSettings.region;
 
@@ -57,11 +81,17 @@ function handleApplyClick() {
         },
       })
       .then((res) => {
-        azureInfo.voices = res.data;
-        message.success("Get voice list successful");
+        const data = res.data;
+        const voices = data.map((item: any) => ({
+          label: item.LocalName,
+          value: item.ShortName,
+        }));
+        azureInfo.voices = voices;
+        azureSettings.status = true;
+        message.success("Connect Successful");
       })
       .catch((err) => {
-        message.error("Get voice list failed");
+        message.error("Connect Failed");
       })
       .then(() => {
         loadingRef.value = false;
