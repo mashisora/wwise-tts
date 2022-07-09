@@ -1,32 +1,25 @@
-import { buildSlots } from "@vue/compiler-core";
 import { defineStore } from "pinia";
 
-interface AzureSettings {
-  key: string | null;
-  region: string | null;
-  status: boolean;
+interface Settings {
+  azure: {
+    key: string | null;
+    region: string | null;
+  },
+  wwise: {
+    url: string | null;
+  }
 }
 
-interface WwiseSettings {
-  url: string | null;
-  status: boolean;
-}
-
-export const useAzureSettings = defineStore("azureSettings", {
-  state: (): AzureSettings => {
+export const useSettings = defineStore("settings", {
+  state: (): Settings => {
     return {
-      key: null,
-      region: null,
-      status: false,
+      azure: {
+        key: null,
+        region: null,
+      },
+      wwise: {
+        url: "ws://127.0.0.1:8080/waapi",
+      }
     };
-  },
-});
-
-export const useWwiseSettings = defineStore("wwiseSettings", {
-  state: (): WwiseSettings => {
-    return {
-      url: "ws://127.0.0.1:8080/waapi",
-      status: false,
-    };
-  },
+  }
 });
