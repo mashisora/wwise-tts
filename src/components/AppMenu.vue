@@ -38,17 +38,17 @@ const menuOptions: MenuOption[] = [
   },
   {
     label: renderLink("/speech", "Speech"),
-    key: "speech",
+    key: "/speech",
     icon: renderIcon(Speaker216Regular),
   },
   {
     label: renderLink("/settings", "Settings"),
-    key: "settings",
+    key: "/settings",
     icon: renderIcon(Settings16Regular),
   },
   {
     label: renderLink("/about", "About"),
-    key: "about",
+    key: "/about",
     icon: renderIcon(Info16Regular),
   },
 ];
