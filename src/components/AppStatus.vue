@@ -1,9 +1,14 @@
 <template>
-{{ route.name }}
+Path: {{ route.path }}
+Azure: {{ status.azure.isConnected ? "Connected" : "Disconnected" }}
+Wwise: {{ status.wwise.isConnected ? "Connected" : "Disconnected" }}
 </template>
 
 <script lang="ts" setup>
 import { useRoute } from "vue-router";
 
-const route = useRoute()
+import { useStatus } from "../stores/status";
+
+const route = useRoute();
+const status = useStatus();
 </script>
