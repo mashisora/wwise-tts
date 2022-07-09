@@ -1,6 +1,7 @@
 <template>
-  <n-card title="About"> </n-card>
+  <NCard title="About"> </NCard>
 </template>
 
 <script lang="ts" setup>
+import { NCard } from "naive-ui";
 </script>

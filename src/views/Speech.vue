@@ -1,48 +1,48 @@
 <template>
   {{ speechConfig.fileName }}
-  <n-card title="Text to Speech">
-    <n-form ref="speechConfigRef" :model="speechConfig">
-      <n-form-item path="key" label="Text">
-        <n-input v-model:value="speechConfig.text" type="textarea" />
-      </n-form-item>
-      <n-form-item path="voice" label="Voice">
-        <n-select
+  <NCard title="Text to Speech">
+    <NForm ref="speechConfigRef" :model="speechConfig">
+      <NFormItem path="key" label="Text">
+        <NInput v-model:value="speechConfig.text" type="textarea" />
+      </NFormItem>
+      <NFormItem path="voice" label="Voice">
+        <NSelect
           v-model:value="speechConfig.voice"
           :options="azureInfo.voices"
           filterable
         />
-      </n-form-item>
-      <n-form-item path="format" label="Format">
-        <n-select
+      </NFormItem>
+      <NFormItem path="format" label="Format">
+        <NSelect
           v-model:value="speechConfig.format"
           :options="azureInfo.formats"
         />
-      </n-form-item>
-      <n-form-item path="fileName" label="File Name">
-        <n-input-group>
-          <n-input v-model:value="speechConfig.fileName" />
-          <n-input-group-label>.wav</n-input-group-label>
-        </n-input-group>
-      </n-form-item>
-      <n-space justify="end">
-        <n-button
+      </NFormItem>
+      <NFormItem path="fileName" label="File Name">
+        <NInputGroup>
+          <NInput v-model:value="speechConfig.fileName" />
+          <NInputGroupLabel>.wav</NInputGroupLabel>
+        </NInputGroup>
+      </NFormItem>
+      <NSpace justify="end">
+        <NButton
           :loading="loadingRef"
           :disabled="!azureSettings.status"
           @click="handleSynthesizeClick"
         >
           Synthesize
-        </n-button>
-        <n-button disabled @click="handlePlayClick"> Play(WIP) </n-button>
-        <n-button
+        </NButton>
+        <NButton disabled @click="handlePlayClick"> Play(WIP) </NButton>
+        <NButton
           type="primary"
           :disabled="!wwiseSettings.status"
           @click="handleImportClick"
         >
           Import
-        </n-button>
-      </n-space>
-    </n-form>
-  </n-card>
+        </NButton>
+      </NSpace>
+    </NForm>
+  </NCard>
 </template>
 
 <script lang="ts" setup>
@@ -50,7 +50,7 @@ import { ref, computed } from "vue";
 import { FormInst } from "naive-ui";
 import { useSpeechConfig, useAzureInfo } from "../stores/speech";
 import { useAzureSettings, useWwiseSettings } from "../stores/settings";
-import { useMessage } from "naive-ui";
+import { useMessage, NCard, NForm, NFormItem, NInput, NInputGroup, NInputGroupLabel, NSelect, NSpace, NButton } from "naive-ui";
 import { ipcRenderer } from "electron";
 
 const speechConfigRef = ref<FormInst | null>(null);
