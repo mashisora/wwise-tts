@@ -1,6 +1,6 @@
 <template>
-  <n-space justify="center" style="padding: 24px">
-    <n-avatar
+  <NSpace justify="center" style="padding: 24px">
+    <NAvatar
       :size="96"
       :style="{
         color: 'white',
@@ -8,16 +8,16 @@
         fontSize: '60px',
       }"
       >X
-    </n-avatar>
-  </n-space>
-  <n-menu :value="route.name" :options="menuOptions" />
+    </NAvatar>
+  </NSpace>
+  <NMenu :value="route.path" :options="menuOptions" />
 </template>
 
 <script lang="ts" setup>
 import { h, Component } from "vue";
 import { useRoute } from "vue-router";
 import { RouterLink } from "vue-router";
-import { NIcon, MenuOption } from "naive-ui";
+import { NSpace, NIcon, NAvatar, NMenu, MenuOption } from "naive-ui";
 import Settings16Regular from "@vicons/fluent/Settings16Regular";
 import Home16Regular from "@vicons/fluent/Home16Regular";
 import Speaker216Regular from "@vicons/fluent/Speaker216Regular";
@@ -34,7 +34,7 @@ const renderLink = (path: string, text: string) => {
 const menuOptions: MenuOption[] = [
   {
     label: renderLink("/", "Home"),
-    key: "home",
+    key: "/",
     icon: renderIcon(Home16Regular),
   },
   {

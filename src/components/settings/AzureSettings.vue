@@ -1,42 +1,42 @@
 <template>
-  <n-card title="Azure Settings">
-    <n-form ref="azureSettingsRef" :model="azureSettings">
-      <n-form-item path="key" label="Key">
-        <n-input
+  <NCard title="Azure Settings">
+    <NForm ref="azureSettingsRef" :model="azureSettings">
+      <NFormItem path="key" label="Key">
+        <NInput
           v-model:value="azureSettings.key"
           type="password"
           show-password-on="mousedown"
           :disabled="azureSettings.status"
         />
-      </n-form-item>
-      <n-form-item path="region" label="Region">
-        <n-select
+      </NFormItem>
+      <NFormItem path="region" label="Region">
+        <NSelect
           v-model:value="azureSettings.region"
           :options="azureInfo.regions"
           :disabled="azureSettings.status"
           filterable
         />
-      </n-form-item>
-    </n-form>
-    <n-space justify="end">
-      <n-button
+      </NFormItem>
+      </NForm>
+    <NSpace justify="end">
+      <NButton
         type="error"
         ghost
         :disabled="!azureSettings.status"
         @click="handleDisconnectClick"
       >
         Disconnect
-      </n-button>
-      <n-button
+      </NButton>
+      <NButton
         type="primary"
         :loading="loadingRef"
         :disabled="azureSettings.status"
         @click="handleConnectClick"
       >
         Connect
-      </n-button>
-    </n-space>
-  </n-card>
+      </NButton>
+    </NSpace>
+  </NCard>
 </template>
 
 <script lang="ts" setup>
@@ -44,7 +44,7 @@ import { ref } from "vue";
 import { FormInst } from "naive-ui";
 import { useAzureSettings } from "../../stores/settings";
 import { useAzureInfo } from "../../stores/speech";
-import { useMessage } from "naive-ui";
+import { useMessage, NCard, NForm, NFormItem, NInput, NSelect, NSpace, NButton } from "naive-ui";
 import { ipcRenderer } from "electron";
 
 const azureSettings = useAzureSettings();
@@ -86,30 +86,4 @@ function handleConnectClick() {
     message.error("Please input key and select region");
   }
 }
-
-// Another implement using Microsoft REST API
-//
-// axios
-//   .get("/cognitiveservices/voices/list", {
-//     baseURL: `https://${region}.tts.speech.microsoft.com`,
-//     headers: {
-//       "Ocp-Apim-Subscription-Key": key,
-//     },
-//   })
-//   .then((res) => {
-//     const data = res.data;
-//     const voices = data.map((item: any) => ({
-//       label: item.LocalName,
-//       value: item.ShortName,
-//     }));
-//     azureInfo.voices = voices;
-//     azureSettings.status = true;
-//     message.success("Connect Successful");
-//   })
-//   .catch((err) => {
-//     message.error("Connect Failed");
-//   })
-//   .then(() => {
-//     loadingRef.value = false;
-//   });
 </script>
