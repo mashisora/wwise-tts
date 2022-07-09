@@ -1,31 +1,29 @@
 <template>
   <NCard title="Wwise Settings">
-    <NForm ref="wwiseSettingsRef" :model="wwiseSettings">
-      <NFormItem label="WAAPI URL" path="url">
-        <NInput
-          :disabled="wwiseSettings.status"
-          v-model:value="wwiseSettings.url"
-        />
-      </NFormItem>
-    </NForm>
+    <NFormItem label="WAAPI URL">
+      <NInput
+        v-model:value="settings.url"
+        :disabled="status.isConnected"
+      />
+    </NFormItem>
     <NSpace justify="end">
       <NButton
-        :disabled="wwiseSettings.status"
-        @click="wwiseSettings.$reset()"
+        :disabled="status.isConnected"
+        @click="handleResetClick"
       >
         Reset
       </NButton>
       <NButton
         type="error"
         ghost
-        :disabled="!wwiseSettings.status"
+        :disabled="!status.isConnected"
         @click="handleDisconnectClick"
       >
         Disconnect
       </NButton>
       <NButton
         type="primary"
-        :disabled="wwiseSettings.status"
+        :disabled="status.isConnected"
         @click="handleConnectClick"
       >
         Connect
@@ -35,30 +33,33 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { FormInst } from "naive-ui";
-import { useWwiseSettings } from "../../stores/settings";
-import { useMessage, NCard, NForm, NFormItem, NInput, NSpace, NButton } from "naive-ui";
+import { useMessage, NCard, NFormItem, NInput, NSpace, NButton } from "naive-ui";
 import { ipcRenderer } from "electron";
 
-const wwiseSettings = useWwiseSettings();
-const wwiseSettingsRef = ref<FormInst | null>(null);
+import { useStatus } from "../../stores/status";
+import { useSettings } from "../../stores/settings";
 
+const status = useStatus().wwise;
+const settings = useSettings().wwise;
 const message = useMessage();
 
+function handleResetClick() {
+  settings.url = "ws://127.0.0.1:8080/waapi";
+}
+
 function handleDisconnectClick() {
-  wwiseSettings.status = false;
+  status.isConnected = false;
   message.info("Disconnected");
 }
 
 function handleConnectClick() {
-  const url = wwiseSettings.url;
+  const url = settings.url;
   if (url) {
     const args = [url];
     ipcRenderer
       .invoke("wwise:getInfo", args)
       .then((res) => {
-        wwiseSettings.status = true;
+        status.isConnected = true;
         message.success(`${res.displayName} ${res.version.displayName}`);
       })
       .catch((err) => {

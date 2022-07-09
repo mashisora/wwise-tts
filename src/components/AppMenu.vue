@@ -15,8 +15,7 @@
 
 <script lang="ts" setup>
 import { h, Component } from "vue";
-import { useRoute } from "vue-router";
-import { RouterLink } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 import { NSpace, NIcon, NAvatar, NMenu, MenuOption } from "naive-ui";
 import Settings16Regular from "@vicons/fluent/Settings16Regular";
 import Home16Regular from "@vicons/fluent/Home16Regular";
