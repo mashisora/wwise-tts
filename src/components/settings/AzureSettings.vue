@@ -20,14 +20,6 @@
     </n-form>
     <n-space justify="end">
       <n-button
-        type="warning"
-        ghost
-        :disabled="azureSettings.status"
-        @click="azureSettings.$reset()"
-      >
-        Reset
-      </n-button>
-      <n-button
         type="error"
         ghost
         :disabled="!azureSettings.status"
@@ -53,7 +45,7 @@ import { FormInst } from "naive-ui";
 import { useAzureSettings } from "../../stores/settings";
 import { useAzureInfo } from "../../stores/speech";
 import { useMessage } from "naive-ui";
-import axios from "axios";
+import { ipcRenderer } from "electron";
 
 const azureSettings = useAzureSettings();
 const azureInfo = useAzureInfo();
@@ -73,18 +65,12 @@ function handleConnectClick() {
 
   if (key && region) {
     loadingRef.value = true;
-    axios
-      .get("/cognitiveservices/voices/list", {
-        baseURL: `https://${region}.tts.speech.microsoft.com`,
-        headers: {
-          "Ocp-Apim-Subscription-Key": key,
-        },
-      })
+    const args = [key, region];
+    ipcRenderer.invoke("msspeech:getVoices", args)
       .then((res) => {
-        const data = res.data;
-        const voices = data.map((item: any) => ({
-          label: item.LocalName,
-          value: item.ShortName,
+        const voices = res.map((item: any) => ({
+          label: item.localName,
+          value: item.shortName,
         }));
         azureInfo.voices = voices;
         azureSettings.status = true;
@@ -100,4 +86,30 @@ function handleConnectClick() {
     message.error("Please input key and select region");
   }
 }
+
+// Another implement using Microsoft REST API
+//
+// axios
+//   .get("/cognitiveservices/voices/list", {
+//     baseURL: `https://${region}.tts.speech.microsoft.com`,
+//     headers: {
+//       "Ocp-Apim-Subscription-Key": key,
+//     },
+//   })
+//   .then((res) => {
+//     const data = res.data;
+//     const voices = data.map((item: any) => ({
+//       label: item.LocalName,
+//       value: item.ShortName,
+//     }));
+//     azureInfo.voices = voices;
+//     azureSettings.status = true;
+//     message.success("Connect Successful");
+//   })
+//   .catch((err) => {
+//     message.error("Connect Failed");
+//   })
+//   .then(() => {
+//     loadingRef.value = false;
+//   });
 </script>

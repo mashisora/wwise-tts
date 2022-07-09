@@ -113,6 +113,11 @@ ipcMain.handle("wwise:importAudio", async (event, args) => {
   await wwise.importAudio(args);
 });
 
+ipcMain.handle("msspeech:getVoices", async (event, args) => {
+  const voices = await msspeech.getVoices(args);  
+  return voices;
+});
+
 ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
   const path = await msspeech.synthesizeAudio(args);
   return path;
