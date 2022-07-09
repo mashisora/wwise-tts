@@ -9,8 +9,5 @@
 </template>
 
 <script lang="ts" setup>
-import { useWwiseSettings, useAzureSettings } from "../stores/settings";
 
-const azureSettings = useAzureSettings();
-const wwiseSettings = useWwiseSettings();
 </script>

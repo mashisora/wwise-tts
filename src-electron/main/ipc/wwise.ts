@@ -18,7 +18,7 @@ const wwise = {
     try {
       const userData = app.getPath("userData");
       const path = `${userData}/${fileName}.wav`;
-
+ 
       let client = await waapi.connect(url);
       const selectedObjectsInfo = await client.call(
         ak.wwise.ui.getSelectedObjects,
