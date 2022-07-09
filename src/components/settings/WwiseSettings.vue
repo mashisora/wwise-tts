@@ -10,8 +10,6 @@
     </n-form>
     <n-space justify="end">
       <n-button
-        type="warning"
-        ghost
         :disabled="wwiseSettings.status"
         @click="wwiseSettings.$reset()"
       >
@@ -61,21 +59,6 @@ function handleConnectClick() {
       .invoke("wwise:getInfo", args)
       .then((res) => {
         wwiseSettings.status = true;
-        message.success(`${res.displayName} ${res.version.displayName}`);
-      })
-      .catch((err) => {
-        message.error("Cannot connect to Wwise");
-      });
-  }
-}
-
-function handleApplyClick() {
-  const url = wwiseSettings.url;
-  if (url) {
-    const args = [url];
-    ipcRenderer
-      .invoke("wwise:getInfo", args)
-      .then((res) => {
         message.success(`${res.displayName} ${res.version.displayName}`);
       })
       .catch((err) => {

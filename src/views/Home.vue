@@ -1,10 +1,3 @@
-<script lang="ts" setup>
-import { useWwiseSettings, useAzureSettings } from "../stores/settings";
-
-const azureSettings = useAzureSettings();
-const wwiseSettings = useWwiseSettings();
-</script>
-
 <template>
   <n-card title="README">
     <p>草稿阶段，没写文档</p>
@@ -14,3 +7,10 @@ const wwiseSettings = useWwiseSettings();
     <p>然后进入speech页面使用</p>
   </n-card>
 </template>
+
+<script lang="ts" setup>
+import { useWwiseSettings, useAzureSettings } from "../stores/settings";
+
+const azureSettings = useAzureSettings();
+const wwiseSettings = useWwiseSettings();
+</script>
