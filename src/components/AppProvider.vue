@@ -1,16 +1,16 @@
 <template>
-  <n-config-provider :theme="theme">
-    <n-global-style />
-    <n-loading-bar-provider>
-      <n-message-provider>
-        <n-notification-provider>
-          <n-dialog-provider>
+  <NConfigProvider :theme="theme">
+    <NGlobalStyle />
+    <NLoadingBarProvider>
+      <NMessageProvider>
+        <NNotificationProvider>
+          <NDialogProvider>
             <slot></slot>
-          </n-dialog-provider>
-        </n-notification-provider>
-      </n-message-provider>
-    </n-loading-bar-provider>
-  </n-config-provider>
+          </NDialogProvider>
+        </NNotificationProvider>
+      </NMessageProvider>
+    </NLoadingBarProvider>
+  </NConfigProvider>
 </template>
 
 <script lang="ts" setup>

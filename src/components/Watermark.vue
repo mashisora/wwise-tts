@@ -1,5 +1,5 @@
 <template>
-  <n-watermark
+  <NWatermark
     content="Demo Version"
     cross
     fullscreen
@@ -14,4 +14,5 @@
 </template>
 
 <script lang="ts" setup>
+import { NWatermark } from "naive-ui";
 </script>
