@@ -1,4 +1,4 @@
-import * as sdk from "microsoft-cognitiveservices-speech-sdk";
+import sdk from "microsoft-cognitiveservices-speech-sdk";
 import { app } from "electron";
 
 const speakTextAsync = (
@@ -7,7 +7,7 @@ const speakTextAsync = (
   text: string
 ) =>
   new Promise((resolve, reject) => {
-    let synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+    const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
     synthesizer.speakTextAsync(
       text,
       (res) => {
@@ -27,7 +27,7 @@ const speakSsmlAsync = (
   ssml: string
 ) =>
   new Promise((resolve, reject) => {
-    let synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+    const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
     synthesizer.speakSsmlAsync(
       ssml,
       (res) => {
@@ -41,9 +41,8 @@ const speakSsmlAsync = (
     );
   });
 
-
 const msspeech = {
-  getVoices: async ([key, region, locale]: string[]) => {
+  getVoices: async ([key, region]: string[]) => {
     try {
       const speechConfig = sdk.SpeechConfig.fromSubscription(key, region);
       const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
@@ -71,20 +70,12 @@ const msspeech = {
     try {
       const userData = app.getPath("userData");
       const path = `${userData}/${fileName}.wav`;
-      console.log(key);
-      console.log(region);
-      console.log(text);
-      console.log(voice);
-      console.log(format);
-      console.log(fileName);
 
       const speechConfig = sdk.SpeechConfig.fromSubscription(key, region);
       speechConfig.speechSynthesisVoiceName = voice;
-      speechConfig.speechSynthesisOutputFormat =
-        sdk.SpeechSynthesisOutputFormat[format];
-
+      speechConfig.speechSynthesisOutputFormat = format as any;
+      
       const audioConfig = sdk.AudioConfig.fromAudioFileOutput(path);
-
       await speakTextAsync(speechConfig, audioConfig, text);
       return path;
     } catch (e) {

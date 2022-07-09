@@ -12,7 +12,7 @@ export const useSpeechConfig = defineStore("speechConfig", {
     return {
       text: null,
       voice: null,
-      format: null,
+      format: 'Riff16Khz16BitMonoPcm',
       fileName: null,
     };
   },
