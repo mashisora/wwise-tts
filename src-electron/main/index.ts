@@ -104,7 +104,7 @@ ipcMain.handle('open-win', (event, arg) => {
 // IPC
 import wwise from "./ipc/wwise";
 import msspeech from "./ipc/msspeech";
-import "./ipc/file";
+import file from "./ipc/file";
 
 ipcMain.handle("wwise:getInfo", async (event, args) => {
   const info = await wwise.getInfo(args);
@@ -121,15 +121,14 @@ ipcMain.handle("msspeech:getVoices", async (event, args) => {
 });
 
 ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
-  const path = await msspeech.synthesizeAudio(args);
-  return path;
+  await msspeech.synthesizeAudio(args);
 });
 
-// ipcMain.handle("file:readJson", async (event, args) => {
-//   const data = await file.readJson(args);
-//   return data;
-// });
+ipcMain.handle("file:readJson", async (event, args) => {
+  const data = await file.readJson(args);
+  return data;
+});
 
-// ipcMain.handle("file:writeJson", async (event, args) => {
-//   await file.writeJson(args);
-// });
+ipcMain.handle("file:writeJson", async (event, args) => {
+  await file.writeJson(args);
+});
