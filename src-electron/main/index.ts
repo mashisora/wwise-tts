@@ -1,7 +1,6 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-import fs from "fs";
+import { app, BrowserWindow, shell, ipcMain } from 'electron'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -17,22 +16,19 @@ if (!app.requestSingleInstanceLock()) {
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 export const ROOT_PATH = {
-  // /dist
   dist: join(__dirname, '..'),
-  // /dist or /public
   public: join(__dirname, app.isPackaged ? '..' : '../../public'),
 }
 
 let win: BrowserWindow | null = null
-// Here, you can also use other preload
+
 const preload = join(__dirname, '../preload/index.js')
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin
 const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
 const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: 'Wwise TTS',
     icon: join(ROOT_PATH.public, 'favicon.ico'),
     webPreferences: {
       preload,
@@ -42,16 +38,10 @@ async function createWindow() {
   })
 
   if (app.isPackaged) {
-    win.loadFile(indexHtml)
+    win.loadFile(indexHtml);
   } else {
-    win.loadURL(url)
-    // win.webContents.openDevTools()
+    win.loadURL(url);
   }
-
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -67,68 +57,55 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
+
+// Focus on the main window if the user tried to open another
 app.on('second-instance', () => {
   if (win) {
-    // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore()
-    win.focus()
+    if (win.isMinimized()) {
+      win.restore();
+    }
+    win.focus();
   }
 })
 
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
-    allWindows[0].focus()
+    allWindows[0].focus();
   } else {
-    createWindow()
-  }
-})
-
-// new window example arg: new windows url
-ipcMain.handle('open-win', (event, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-    },
-  })
-
-  if (app.isPackaged) {
-    childWindow.loadFile(indexHtml, { hash: arg })
-  } else {
-    childWindow.loadURL(`${url}/#${arg}`)
-    // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
+    createWindow();
   }
 })
 
 
-// IPC
+// IPC Handler
 import wwise from "./ipc/wwise";
 import msspeech from "./ipc/msspeech";
 import file from "./ipc/file";
 
-ipcMain.handle("wwise:getInfo", async (event, args) => {
+ipcMain.handle("wwise:getInfo", async (_event, args) => {
   const info = await wwise.getInfo(args);
   return info;
 });
 
-ipcMain.handle("wwise:importAudio", async (event, args) => {
+ipcMain.handle("wwise:importAudio", async (_event, args) => {
   await wwise.importAudio(args);
 });
 
-ipcMain.handle("msspeech:getVoices", async (event, args) => {
+ipcMain.handle("msspeech:getVoices", async (_event, args) => {
   const voices = await msspeech.getVoices(args);
   return voices;
 });
 
-ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
+ipcMain.handle("msspeech:synthesizeAudio", async (_event, args) => {
   await msspeech.synthesizeAudio(args);
 });
 
-ipcMain.handle("file:readJson", async (event, args) => {
+ipcMain.handle("file:readJson", async (_event, args) => {
   const data = await file.readJson(args);
   return data;
 });
 
-ipcMain.handle("file:writeJson", async (event, args) => {
+ipcMain.handle("file:writeJson", async (_event, args) => {
   await file.writeJson(args);
 });

@@ -1,3 +1,4 @@
+import { toRaw } from "vue";
 import { ipcRenderer } from "electron";
 import { defineStore } from "pinia";
 
@@ -24,27 +25,29 @@ export const useSettings = defineStore("settings", {
     };
   },
   actions: {
-    save() {
+    async save() {
       const fileName = "settings";
-      const data = JSON.stringify(this.$state);
+      const data = toRaw(this.$state);
       const args = [fileName, data];
       ipcRenderer
         .invoke("file:writeJson", args)
         .then((res) => {
+          console.log("OK")
         })
         .catch((err) => {
+          console.trace(err);
         })
     },
-    load() {
+    async load() {
       const fileName = "settings";
       const args = [fileName];
       ipcRenderer
         .invoke("file:readJson", args)
         .then((res) => {
-          this.$state = JSON.parse(res);
+          this.$patch(res)
         })
         .catch((err) => {
-          //this.save();
+          this.save();
         })
     }
   }
