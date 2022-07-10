@@ -1,23 +1,5 @@
 import { defineStore } from "pinia";
 
-interface SpeechConfig {
-  text: string | null;
-  voice: string | null;
-  format: string | null;
-  fileName: string | null;
-}
-
-export const useSpeechConfig = defineStore("speechConfig", {
-  state: (): SpeechConfig => {
-    return {
-      text: null,
-      voice: null,
-      format: 'Riff16Khz16BitMonoPcm',
-      fileName: null,
-    };
-  },
-});
-
 export const useAzureInfo = defineStore("azureInfo", {
   state: () => {
     return {

@@ -46,7 +46,7 @@ import { FormInst, FormRules, FormItemRule } from "naive-ui";
 
 import { useStatus } from "../../stores/status";
 import { useSettings } from "../../stores/settings";
-import { useAzureInfo } from "../../stores/speech";
+import { useAzureInfo } from "../../stores/azureInfo";
 
 const status = useStatus().azure
 const settings = useSettings().azure;

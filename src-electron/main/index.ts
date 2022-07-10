@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+import fs from "fs";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -103,6 +104,7 @@ ipcMain.handle('open-win', (event, arg) => {
 // IPC
 import wwise from "./ipc/wwise";
 import msspeech from "./ipc/msspeech";
+import "./ipc/file";
 
 ipcMain.handle("wwise:getInfo", async (event, args) => {
   const info = await wwise.getInfo(args);
@@ -114,7 +116,7 @@ ipcMain.handle("wwise:importAudio", async (event, args) => {
 });
 
 ipcMain.handle("msspeech:getVoices", async (event, args) => {
-  const voices = await msspeech.getVoices(args);  
+  const voices = await msspeech.getVoices(args);
   return voices;
 });
 
@@ -122,3 +124,12 @@ ipcMain.handle("msspeech:synthesizeAudio", async (event, args) => {
   const path = await msspeech.synthesizeAudio(args);
   return path;
 });
+
+// ipcMain.handle("file:readJson", async (event, args) => {
+//   const data = await file.readJson(args);
+//   return data;
+// });
+
+// ipcMain.handle("file:writeJson", async (event, args) => {
+//   await file.writeJson(args);
+// });

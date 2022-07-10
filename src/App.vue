@@ -7,7 +7,11 @@
           <AppMenu />
         </NLayoutSider>
         <NLayoutContent content-style="padding: 24px" :native-scrollbar="false">
-          <RouterView />
+          <RouterView v-slot="{ Component }">
+            <KeepAlive>
+              <component :is="Component" />
+            </KeepAlive>
+          </RouterView>
         </NLayoutContent>
       </NLayout>
       <NLayoutFooter bordered position="absolute" style="height: 22px">
@@ -18,6 +22,7 @@
 </template>
 
 <script lang="ts" setup>
+import { KeepAlive } from "vue";
 import { NLayout, NLayoutSider, NLayoutContent, NLayoutFooter } from "naive-ui";
 import AppProvider from "./components/AppProvider.vue";
 import AppMenu from "./components/AppMenu.vue";
