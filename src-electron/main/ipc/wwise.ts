@@ -1,6 +1,6 @@
-import waapi from "waapi-client";
 import { app } from "electron";
 import { ak } from "waapi";
+import waapi from "waapi-client";
 
 const wwise = {
   getInfo: async ([url]: string[]) => {

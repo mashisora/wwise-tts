@@ -1,5 +1,4 @@
 import { rmSync } from 'fs'
-import { join } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
@@ -23,7 +22,7 @@ export default defineConfig({
       preload: {
         input: {
           // You can configure multiple preload here
-          index: join(__dirname, 'src-electron/preload/index.ts'),
+          index: `${__dirname}/src-electron/preload/index.ts`,
         },
         vite: {
           build: {

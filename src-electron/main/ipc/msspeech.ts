@@ -1,5 +1,5 @@
-import sdk from "microsoft-cognitiveservices-speech-sdk";
 import { app } from "electron";
+import sdk from "microsoft-cognitiveservices-speech-sdk";
 
 const msspeech = {
   getVoices: async ([key, region]: string[]) => {
@@ -28,8 +28,8 @@ const msspeech = {
 
     const speechConfig = sdk.SpeechConfig.fromSubscription(key, region);
     speechConfig.speechSynthesisVoiceName = voice;
-    type index = keyof sdk.SpeechSynthesisOutputFormat;
-    speechConfig.speechSynthesisOutputFormat[format as index];
+    type index = keyof typeof sdk.SpeechSynthesisOutputFormat;
+    speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat[format as index];
     
     const audioConfig = sdk.AudioConfig.fromAudioFileOutput(path);
     await speakTextAsync(speechConfig, audioConfig, text);
