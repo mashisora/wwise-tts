@@ -53,8 +53,8 @@ async function createWindow() {
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
-  win = null
-  if (process.platform !== 'darwin') app.quit()
+  win = null;
+  app.quit();
 })
 
 
@@ -108,4 +108,8 @@ ipcMain.handle("file:readJson", async (_event, args) => {
 
 ipcMain.handle("file:writeJson", async (_event, args) => {
   await file.writeJson(args);
+});
+
+ipcMain.handle("file:openUserData", async (_event, _args) => {
+  await file.openUserData();
 });

@@ -2,6 +2,7 @@ import { toRaw } from "vue";
 import { ipcRenderer } from "electron";
 import { defineStore } from "pinia";
 
+
 interface Settings {
   azure: {
     key: string | null;
@@ -29,14 +30,7 @@ export const useSettings = defineStore("settings", {
       const fileName = "settings";
       const data = toRaw(this.$state);
       const args = [fileName, data];
-      ipcRenderer
-        .invoke("file:writeJson", args)
-        .then((res) => {
-          console.log("OK")
-        })
-        .catch((err) => {
-          console.trace(err);
-        })
+      ipcRenderer.invoke("file:writeJson", args);
     },
     async load() {
       const fileName = "settings";
@@ -47,7 +41,7 @@ export const useSettings = defineStore("settings", {
           this.$patch(res)
         })
         .catch((err) => {
-          this.save();
+          this.save().catch();
         })
     }
   }
