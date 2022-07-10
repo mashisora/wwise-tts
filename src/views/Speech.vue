@@ -54,15 +54,20 @@ import { useMessage } from "naive-ui";
 import { NCard, NForm, NFormItem, NInput, NInputGroup, NInputGroupLabel, NSelect, NSpace, NButton } from "naive-ui";
 import { FormInst, FormRules, FormItemRule } from "naive-ui";
 
-import { useSpeechConfig, useAzureInfo } from "../stores/speech";
-
 import { useStatus } from "../stores/status";
 import { useSettings } from "../stores/settings";
+import { useAzureInfo } from "../stores/azureInfo";
 
 const status = useStatus();
 const settings = useSettings();
-const speechConfig = useSpeechConfig();
 const azureInfo = useAzureInfo();
+
+const speechConfig = ref({
+  text: null,
+  voice: null,
+  format: 'Riff16Khz16BitMonoPcm',
+  fileName: null,
+});
 
 const message = useMessage();
 const loadingRef = ref(false);
@@ -131,10 +136,10 @@ function _synthesize() {
   loadingRef.value = true;
   const key = settings.azure.key;
   const region = settings.azure.region;
-  const text = speechConfig.text;
-  const voice = speechConfig.voice;
-  const format = speechConfig.format;
-  const fileName = speechConfig.fileName;
+  const text = speechConfig.value.text;
+  const voice = speechConfig.value.voice;
+  const format = speechConfig.value.format;
+  const fileName = speechConfig.value.fileName;
   const args = [key, region, text, voice, format, fileName];
   ipcRenderer
     .invoke("msspeech:synthesizeAudio", args)
@@ -151,7 +156,7 @@ function _synthesize() {
 
 function _import() {
   const url = settings.wwise.url;
-  const fileName = speechConfig.fileName;
+  const fileName = speechConfig.value.fileName;
   const args = [url, fileName];
   ipcRenderer
     .invoke("wwise:importAudio", args)
