@@ -8,7 +8,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build && electron-builder"
+    "build": "vite build && electron-builder",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "engines": {
     "node": ">=14.17.0"
@@ -19,13 +20,20 @@
     "waapi-client": "^2017.2.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.5",
+    "@typescript-eslint/parser": "^5.30.5",
     "@vicons/fluent": "^0.12.0",
     "@vitejs/plugin-vue": "^2.3.3",
     "axios": "^0.27.2",
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-vue": "^9.2.0",
     "naive-ui": "^2.31.0",
     "pinia": "^2.0.14",
+    "prettier": "^2.7.1",
     "typescript": "^4.7.4",
     "vite": "^2.9.14",
     "vite-plugin-electron": "^0.7.3",

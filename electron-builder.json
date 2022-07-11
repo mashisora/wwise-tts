@@ -4,9 +4,7 @@
   "directories": {
     "output": "release/${version}"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "win": {
     "target": "portable",
     "artifactName": "${productName}-${version}.${ext}"
