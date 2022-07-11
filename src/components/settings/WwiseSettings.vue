@@ -61,7 +61,7 @@ const formRules: FormRules = {
     },
     trigger: ['input', 'blur', 'focus']
   }
-} 
+}
 
 function handleResetClick() {
   settings.url = "ws://127.0.0.1:8080/waapi";
@@ -77,7 +77,6 @@ function handleConnectClick() {
   formRef.value?.validate((err) => {
     if (!err) {
       _connect();
-      _saveConfig();
     } else {
       message.error('Invalid information')
     }
@@ -96,9 +95,5 @@ function _connect() {
     .catch((err) => {
       message.error("Cannot connect to Wwise");
     });
-}
-
-function _saveConfig() {
-
 }
 </script>
