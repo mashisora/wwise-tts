@@ -14,6 +14,7 @@ dist-ssr
 
 # Editor directories and files
 .idea
+.vscode
 .DS_Store
 *.suo
 *.ntvs*
@@ -22,7 +23,6 @@ dist-ssr
 *.sw?
 
 release
-.vscode/.debug.env
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
