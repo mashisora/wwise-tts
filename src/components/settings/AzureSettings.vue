@@ -72,7 +72,7 @@ const formRules: FormRules = {
     },
     trigger: ['blur']
   }
-} 
+}
 
 function handleDisconnectClick() {
   status.isConnected = false;
@@ -83,7 +83,6 @@ function handleConnectClick() {
   formRef.value?.validate((err) => {
     if (!err) {
       _connect();
-      _saveConfig();
     } else {
       message.error('Invalid information')
     }
@@ -111,9 +110,5 @@ function _connect() {
     .then(() => {
       loadingRef.value = false;
     });
-}
-
-function _saveConfig() {
-
 }
 </script>
