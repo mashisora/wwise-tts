@@ -1,6 +1,6 @@
-import { app } from "electron";
-import { ak } from "waapi";
-import waapi from "waapi-client";
+import { app } from 'electron';
+import { ak } from 'waapi';
+import waapi from 'waapi-client';
 
 const wwise = {
   getInfo: async ([url]: string[]) => {
@@ -11,14 +11,14 @@ const wwise = {
   },
 
   importAudio: async ([url, fileName]: string[]) => {
-    const userData = app.getPath("userData");
+    const userData = app.getPath('userData');
     const path = `${userData}/${fileName}.wav`;
 
     let client = await waapi.connect(url);
     const selectedObjectsInfo = await client.call(
       ak.wwise.ui.getSelectedObjects,
       {},
-      { return: ["path"] }
+      { return: ['path'] },
     );
     const selectedObjectPath = selectedObjectsInfo.objects[0].path;
 

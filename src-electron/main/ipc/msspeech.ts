@@ -1,5 +1,5 @@
-import { app } from "electron";
-import sdk from "microsoft-cognitiveservices-speech-sdk";
+import { app } from 'electron';
+import sdk from 'microsoft-cognitiveservices-speech-sdk';
 
 const msspeech = {
   getVoices: async ([key, region]: string[]) => {
@@ -11,26 +11,19 @@ const msspeech = {
       gender: item.gender,
       localName: item.localName,
       shortName: item.shortName,
-    }))
+    }));
     return voices;
   },
 
-  synthesizeAudio: async ([
-    key,
-    region,
-    text,
-    voice,
-    format,
-    fileName,
-  ]: string[]) => {
-    const userData = app.getPath("userData");
+  synthesizeAudio: async ([key, region, text, voice, format, fileName]: string[]) => {
+    const userData = app.getPath('userData');
     const path = `${userData}/${fileName}.wav`;
 
     const speechConfig = sdk.SpeechConfig.fromSubscription(key, region);
     speechConfig.speechSynthesisVoiceName = voice;
     type index = keyof typeof sdk.SpeechSynthesisOutputFormat;
     speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat[format as index];
-    
+
     const audioConfig = sdk.AudioConfig.fromAudioFileOutput(path);
     await speakTextAsync(speechConfig, audioConfig, text);
     return path;
@@ -42,7 +35,7 @@ export default msspeech;
 const speakTextAsync = (
   speechConfig: sdk.SpeechConfig,
   audioConfig: sdk.AudioConfig,
-  text: string
+  text: string,
 ) =>
   new Promise((resolve, reject) => {
     const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
@@ -55,14 +48,14 @@ const speakTextAsync = (
       (err) => {
         synthesizer.close();
         reject(err);
-      }
+      },
     );
   });
 
 const speakSsmlAsync = (
   speechConfig: sdk.SpeechConfig,
   audioConfig: sdk.AudioConfig,
-  ssml: string
+  ssml: string,
 ) =>
   new Promise((resolve, reject) => {
     const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
@@ -75,6 +68,6 @@ const speakSsmlAsync = (
       (err) => {
         synthesizer.close();
         reject(err);
-      }
+      },
     );
   });

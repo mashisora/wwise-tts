@@ -3,5 +3,5 @@
 </template>
 
 <script lang="ts" setup>
-import { NCard } from "naive-ui";
+import { NCard } from 'naive-ui';
 </script>
