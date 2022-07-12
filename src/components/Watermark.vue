@@ -14,5 +14,5 @@
 </template>
 
 <script lang="ts" setup>
-import { NWatermark } from "naive-ui";
+import { NWatermark } from 'naive-ui';
 </script>

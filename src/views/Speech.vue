@@ -2,23 +2,13 @@
   <NCard title="Text to Speech">
     <NForm ref="formRef" :rules="formRules" :model="speechConfig">
       <NFormItem path="text" label="Text">
-        <NInput
-          v-model:value="speechConfig.text"
-          type="textarea"
-        />
+        <NInput v-model:value="speechConfig.text" type="textarea" />
       </NFormItem>
       <NFormItem path="voice" label="Voice">
-        <NSelect
-          v-model:value="speechConfig.voice"
-          :options="azureInfo.voices"
-          filterable
-        />
+        <NSelect v-model:value="speechConfig.voice" :options="azureInfo.voices" filterable />
       </NFormItem>
       <NFormItem path="format" label="Format">
-        <NSelect
-          v-model:value="speechConfig.format"
-          :options="azureInfo.formats"
-        />
+        <NSelect v-model:value="speechConfig.format" :options="azureInfo.formats" />
       </NFormItem>
       <NFormItem path="fileName" label="File Name">
         <NInputGroup>
@@ -35,11 +25,7 @@
           Synthesize
         </NButton>
         <NButton disabled @click="handlePlayClick"> Play(WIP) </NButton>
-        <NButton
-          type="primary"
-          :disabled="!status.wwise.isConnected"
-          @click="handleImportClick"
-        >
+        <NButton type="primary" :disabled="!status.wwise.isConnected" @click="handleImportClick">
           Import
         </NButton>
       </NSpace>
@@ -48,15 +34,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { ipcRenderer } from "electron";
-import { useMessage } from "naive-ui";
-import { NCard, NForm, NFormItem, NInput, NInputGroup, NInputGroupLabel, NSelect, NSpace, NButton } from "naive-ui";
-import { FormInst, FormRules, FormItemRule } from "naive-ui";
+import { ref } from 'vue';
+import { ipcRenderer } from 'electron';
+import { useMessage } from 'naive-ui';
+import {
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NInputGroup,
+  NInputGroupLabel,
+  NSelect,
+  NSpace,
+  NButton,
+} from 'naive-ui';
+import { FormInst, FormRules, FormItemRule } from 'naive-ui';
 
-import { useStatus } from "../stores/status";
-import { useSettings } from "../stores/settings";
-import { useAzureInfo } from "../stores/azureInfo";
+import { useStatus } from '../stores/status';
+import { useSettings } from '../stores/settings';
+import { useAzureInfo } from '../stores/azureInfo';
 
 const status = useStatus();
 const settings = useSettings();
@@ -72,64 +68,66 @@ const speechConfig = ref({
 const message = useMessage();
 const loadingRef = ref(false);
 
-const formRef = ref<FormInst | null>(null)
+const formRef = ref<FormInst | null>(null);
 const formRules: FormRules = {
   text: {
-    validator (rule: FormItemRule, value: string) {
+    validator(rule: FormItemRule, value: string) {
       if (!value) {
-        return new Error('Please input text')
+        return new Error('Please input text');
       }
-      return true
+      return true;
     },
-    trigger: ['input', 'blur']
+    trigger: ['input', 'blur'],
   },
   voice: {
-    validator (rule: FormItemRule, value: string) {
+    validator(rule: FormItemRule, value: string) {
       return value ? true : new Error('Please select a voice');
     },
-    trigger: ['blur']
+    trigger: ['blur'],
   },
   format: {
-    validator (rule: FormItemRule, value: string) {
+    validator(rule: FormItemRule, value: string) {
       return value ? true : new Error('Please select a format');
     },
-    trigger: ['blur']
+    trigger: ['blur'],
   },
   fileName: {
-    key: "import",
-    validator (rule: FormItemRule, value: string) {
+    key: 'import',
+    validator(rule: FormItemRule, value: string) {
       if (!value) {
-        return new Error('Please input a file name')
+        return new Error('Please input a file name');
       } else if (!/^[a-zA-Z0-9._-]+$/g.test(value)) {
-        return new Error('Please input a valid file name')
+        return new Error('Please input a valid file name');
       }
-      return true
+      return true;
     },
-    trigger: ['input', 'blur']
-  }
-}
+    trigger: ['input', 'blur'],
+  },
+};
 
 function handleSynthesizeClick() {
   formRef.value?.validate((err) => {
-    if(!err) {
+    if (!err) {
       _synthesize();
     } else {
-      message.error('Invalid information')
+      message.error('Invalid information');
     }
-  })
+  });
 }
 
 function handlePlayClick() {}
 
 function handleImportClick() {
-  formRef.value?.validate((err) => {
-    if(!err) {
-      _import();
-    } else {
-      message.error('Invalid information')
-    }
-  },
-  (rule) => (rule?.key === 'import'))
+  formRef.value?.validate(
+    (err) => {
+      if (!err) {
+        _import();
+      } else {
+        message.error('Invalid information');
+      }
+    },
+    (rule) => rule?.key === 'import',
+  );
 }
 
 function _synthesize() {
@@ -142,12 +140,12 @@ function _synthesize() {
   const fileName = speechConfig.value.fileName;
   const args = [key, region, text, voice, format, fileName];
   ipcRenderer
-    .invoke("msspeech:synthesizeAudio", args)
+    .invoke('msspeech:synthesizeAudio', args)
     .then((res) => {
-      message.success("Audio synthesize successful");
+      message.success('Audio synthesize successful');
     })
     .catch((err) => {
-      message.error("Audio synthesize error");
+      message.error('Audio synthesize error');
     })
     .then(() => {
       loadingRef.value = false;
@@ -159,12 +157,12 @@ function _import() {
   const fileName = speechConfig.value.fileName;
   const args = [url, fileName];
   ipcRenderer
-    .invoke("wwise:importAudio", args)
+    .invoke('wwise:importAudio', args)
     .then((res) => {
-      message.success("Import successful");
+      message.success('Import successful');
     })
     .catch((err) => {
-      message.error("Import faild");
+      message.error('Import faild');
     });
 }
 </script>

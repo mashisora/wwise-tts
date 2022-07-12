@@ -1,10 +1,10 @@
-import { rmSync } from 'fs'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import electron from 'vite-plugin-electron'
-import pkg from './package.json'
+import { rmSync } from 'fs';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import electron from 'vite-plugin-electron';
+import pkg from './package.json';
 
-rmSync('dist', { recursive: true, force: true }) // v14.14.0
+rmSync('dist', { recursive: true, force: true }); // v14.14.0
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,8 +29,8 @@ export default defineConfig({
             // For debug
             sourcemap: 'inline',
             outDir: 'dist/preload',
-          }
-        }
+          },
+        },
       },
       // Enables use of Node.js API in the Renderer-process
       renderer: {},
@@ -40,4 +40,4 @@ export default defineConfig({
     host: pkg.env.VITE_DEV_SERVER_HOST,
     port: pkg.env.VITE_DEV_SERVER_PORT,
   },
-})
+});

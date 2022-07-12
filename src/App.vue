@@ -22,10 +22,10 @@
 </template>
 
 <script lang="ts" setup>
-import { KeepAlive } from "vue";
-import { NLayout, NLayoutSider, NLayoutContent, NLayoutFooter } from "naive-ui";
-import AppProvider from "./components/AppProvider.vue";
-import AppMenu from "./components/AppMenu.vue";
-import AppStatus from "./components/AppStatus.vue";
-import Watermark from "./components/Watermark.vue";
+import { KeepAlive } from 'vue';
+import { NLayout, NLayoutSider, NLayoutContent, NLayoutFooter } from 'naive-ui';
+import AppProvider from './components/AppProvider.vue';
+import AppMenu from './components/AppMenu.vue';
+import AppStatus from './components/AppStatus.vue';
+import Watermark from './components/Watermark.vue';
 </script>

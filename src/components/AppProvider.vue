@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed } from 'vue';
 import {
   NConfigProvider,
   NGlobalStyle,
@@ -24,10 +24,10 @@ import {
   NDialogProvider,
   useOsTheme,
   darkTheme,
-} from "naive-ui";
+} from 'naive-ui';
 
 const osTheme = useOsTheme();
-const theme = computed(() => (osTheme.value === "dark" ? darkTheme : null));
+const theme = computed(() => (osTheme.value === 'dark' ? darkTheme : null));
 </script>
 
 <style>

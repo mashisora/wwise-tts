@@ -1,15 +1,15 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
 interface Status {
   azure: {
-    isConnected: boolean
+    isConnected: boolean;
   };
   wwise: {
     isConnected: boolean;
-  }
+  };
 }
 
-export const useStatus = defineStore("status", {
+export const useStatus = defineStore('status', {
   state: (): Status => {
     return {
       azure: {
@@ -17,7 +17,7 @@ export const useStatus = defineStore("status", {
       },
       wwise: {
         isConnected: false,
-      }
-    }
-  }
-})
+      },
+    };
+  },
+});
