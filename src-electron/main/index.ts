@@ -30,6 +30,8 @@ async function createWindow() {
   win = new BrowserWindow({
     title: 'Wwise TTS',
     icon: join(ROOT_PATH.public, 'favicon.ico'),
+    width: 800,
+    height: 600,
     webPreferences: {
       preload,
       nodeIntegration: true,
@@ -81,33 +83,18 @@ import wwise from './ipc/wwise';
 import msspeech from './ipc/msspeech';
 import file from './ipc/file';
 
-ipcMain.handle('wwise:getInfo', async (_event, args) => {
-  const info = await wwise.getInfo(args);
-  return info;
-});
+ipcMain.handle('wwise:getInfo', wwise.getInfo);
 
-ipcMain.handle('wwise:importAudio', async (_event, args) => {
-  await wwise.importAudio(args);
-});
+ipcMain.handle('wwise:importAudio', wwise.importAudio);
 
-ipcMain.handle('msspeech:getVoices', async (_event, args) => {
-  const voices = await msspeech.getVoices(args);
-  return voices;
-});
+ipcMain.handle('msspeech:getVoices', msspeech.getVoices);
 
-ipcMain.handle('msspeech:synthesizeAudio', async (_event, args) => {
-  await msspeech.synthesizeAudio(args);
-});
+ipcMain.handle('msspeech:synthesizeAudio', msspeech.synthesizeAudio);
 
-ipcMain.handle('file:readJson', async (_event, args) => {
-  const data = await file.readJson(args);
-  return data;
-});
+ipcMain.handle('msspeech:synthesizeAudioSsml', msspeech.synthesizeAudioSsml);
 
-ipcMain.handle('file:writeJson', async (_event, args) => {
-  await file.writeJson(args);
-});
+ipcMain.handle('file:readJson', file.readJson);
 
-ipcMain.handle('file:openUserData', async (_event, _args) => {
-  await file.openUserData();
-});
+ipcMain.handle('file:writeJson', file.writeJson);
+
+ipcMain.handle('file:openUserData', file.openUserData);

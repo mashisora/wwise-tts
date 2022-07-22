@@ -9,9 +9,7 @@
         <NButton type="error" ghost :disabled="!status.isConnected" @click="handleDisconnectClick">
           Disconnect
         </NButton>
-        <NButton type="primary" :disabled="status.isConnected" @click="handleConnectClick">
-          Connect
-        </NButton>
+        <NButton type="primary" :disabled="status.isConnected" @click="handleConnectClick"> Connect </NButton>
       </NSpace>
     </NForm>
   </NCard>
@@ -32,6 +30,8 @@ const settings = useSettings().wwise;
 const message = useMessage();
 
 const urlInputRef = ref<InputInst | null>(null);
+
+// Form Validator
 const formRef = ref<FormInst | null>(null);
 const formRules: FormRules = {
   url: {
@@ -45,6 +45,7 @@ const formRules: FormRules = {
   },
 };
 
+// Button Handler
 function handleResetClick() {
   settings.url = 'ws://127.0.0.1:8080/waapi';
   urlInputRef.value?.focus();
@@ -66,15 +67,13 @@ function handleConnectClick() {
 }
 
 function _connect() {
-  const url = settings.url;
-  const args = [url];
   ipcRenderer
-    .invoke('wwise:getInfo', args)
+    .invoke('wwise:getInfo', settings.url)
     .then((res) => {
       status.isConnected = true;
       message.success(`${res.displayName} ${res.version.displayName}`);
     })
-    .catch((err) => {
+    .catch(() => {
       message.error('Cannot connect to Wwise');
     });
 }

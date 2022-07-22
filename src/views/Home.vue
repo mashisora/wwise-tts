@@ -1,10 +1,15 @@
 <template>
   <NCard title="README">
-    <p>草稿阶段，没写文档</p>
-    <p>可能有 bug ，也不太好用</p>
-    <p>使用前进入设置页输入 key 和 region 连接至 Azure</p>
-    <p>并测试 Wwise 连通性</p>
-    <p>然后进入 speech 页面使用</p>
+    <code>- step 1</code>
+    <p>进入 Settings 页面输入 Microsoft Cognitive Services 的 Key 和 Region 并连接</p>
+    <code>- step 2</code>
+    <p>确认 WWAPI URL 是否正确，如未修改过可直接点击连接</p>
+    <code>- step 3</code>
+    <p>进入 Speech 页面开始使用</p>
+    <code>- Tips</code>
+    <p>点击 Import 时，将语音导入到 Wwise 当前选中目标下</p>
+    <p>星号标记项目为必填项</p>
+    <p>Settings 页面最下方可以保存设置，目前为明文保存，注意信息安全</p>
   </NCard>
 </template>
 

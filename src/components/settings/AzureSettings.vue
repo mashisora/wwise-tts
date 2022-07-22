@@ -16,12 +16,7 @@
         <NButton type="error" ghost :disabled="!status.isConnected" @click="handleDisconnectClick">
           Disconnect
         </NButton>
-        <NButton
-          type="primary"
-          :loading="loadingRef"
-          :disabled="status.isConnected"
-          @click="handleConnectClick"
-        >
+        <NButton type="primary" :loading="loadingRef" :disabled="status.isConnected" @click="handleConnectClick">
           Connect
         </NButton>
       </NSpace>
@@ -43,10 +38,11 @@ import { useAzureInfo } from '../../stores/azureInfo';
 const status = useStatus().azure;
 const settings = useSettings().azure;
 const azureInfo = useAzureInfo();
-
 const message = useMessage();
+
 const loadingRef = ref(false);
 
+// Form Validator
 const formRef = ref<FormInst | null>(null);
 const formRules: FormRules = {
   key: {
@@ -66,6 +62,7 @@ const formRules: FormRules = {
   },
 };
 
+// Button Handler
 function handleDisconnectClick() {
   status.isConnected = false;
   message.info('Disconnected');
@@ -83,24 +80,21 @@ function handleConnectClick() {
 
 function _connect() {
   loadingRef.value = true;
-  const key = settings.key;
-  const region = settings.region;
-  const args = [key, region];
   ipcRenderer
-    .invoke('msspeech:getVoices', args)
+    .invoke('msspeech:getVoices', settings.key, settings.region)
     .then((res) => {
-      const voices = res.map((item: any) => ({
-        label: item.localName,
-        value: item.shortName,
-      }));
+      const voices = res.filter((item: any) => {
+        const locale = item.locale;
+        return locale === 'zh-CN' || locale === 'zh-HK' || locale === 'ja-JP' || locale === 'en-US';
+      });
       azureInfo.voices = voices;
       status.isConnected = true;
       message.success('Connect Successful');
     })
-    .catch((err) => {
+    .catch(() => {
       message.error('Connect Failed');
     })
-    .then(() => {
+    .finally(() => {
       loadingRef.value = false;
     });
 }
