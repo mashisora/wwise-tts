@@ -1,7 +1,7 @@
 <template>
   <AppProvider>
     <NLayout position="absolute">
-      <Watermark />
+      <!-- <Watermark /> -->
       <NLayout has-sider position="absolute" style="bottom: 22px">
         <NLayoutSider bordered width="200" :native-scrollbar="false">
           <AppMenu />

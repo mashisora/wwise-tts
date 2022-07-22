@@ -1,168 +1,19 @@
 <template>
-  <NCard title="Text to Speech">
-    <NForm ref="formRef" :rules="formRules" :model="speechConfig">
-      <NFormItem path="text" label="Text">
-        <NInput v-model:value="speechConfig.text" type="textarea" />
-      </NFormItem>
-      <NFormItem path="voice" label="Voice">
-        <NSelect v-model:value="speechConfig.voice" :options="azureInfo.voices" filterable />
-      </NFormItem>
-      <NFormItem path="format" label="Format">
-        <NSelect v-model:value="speechConfig.format" :options="azureInfo.formats" />
-      </NFormItem>
-      <NFormItem path="fileName" label="File Name">
-        <NInputGroup>
-          <NInput v-model:value="speechConfig.fileName" />
-          <NInputGroupLabel>.wav</NInputGroupLabel>
-        </NInputGroup>
-      </NFormItem>
-      <NSpace justify="end">
-        <NButton
-          :loading="loadingRef"
-          :disabled="!status.azure.isConnected"
-          @click="handleSynthesizeClick"
-        >
-          Synthesize
-        </NButton>
-        <NButton disabled @click="handlePlayClick"> Play(WIP) </NButton>
-        <NButton type="primary" :disabled="!status.wwise.isConnected" @click="handleImportClick">
-          Import
-        </NButton>
-      </NSpace>
-    </NForm>
+  <NCard>
+    <NTabs type="line" animated>
+      <NTabPane name="text" tab="Text">
+        <TextSpeech />
+      </NTabPane>
+      <NTabPane name="ssml" tab="SSML">
+        <SsmlSpeech />
+      </NTabPane>
+    </NTabs>
   </NCard>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { ipcRenderer } from 'electron';
-import { useMessage } from 'naive-ui';
-import {
-  NCard,
-  NForm,
-  NFormItem,
-  NInput,
-  NInputGroup,
-  NInputGroupLabel,
-  NSelect,
-  NSpace,
-  NButton,
-} from 'naive-ui';
-import { FormInst, FormRules, FormItemRule } from 'naive-ui';
+import { NCard, NTabs, NTabPane } from 'naive-ui';
 
-import { useStatus } from '../stores/status';
-import { useSettings } from '../stores/settings';
-import { useAzureInfo } from '../stores/azureInfo';
-
-const status = useStatus();
-const settings = useSettings();
-const azureInfo = useAzureInfo();
-
-const speechConfig = ref({
-  text: null,
-  voice: null,
-  format: 'Riff16Khz16BitMonoPcm',
-  fileName: null,
-});
-
-const message = useMessage();
-const loadingRef = ref(false);
-
-const formRef = ref<FormInst | null>(null);
-const formRules: FormRules = {
-  text: {
-    validator(rule: FormItemRule, value: string) {
-      if (!value) {
-        return new Error('Please input text');
-      }
-      return true;
-    },
-    trigger: ['input', 'blur'],
-  },
-  voice: {
-    validator(rule: FormItemRule, value: string) {
-      return value ? true : new Error('Please select a voice');
-    },
-    trigger: ['blur'],
-  },
-  format: {
-    validator(rule: FormItemRule, value: string) {
-      return value ? true : new Error('Please select a format');
-    },
-    trigger: ['blur'],
-  },
-  fileName: {
-    key: 'import',
-    validator(rule: FormItemRule, value: string) {
-      if (!value) {
-        return new Error('Please input a file name');
-      } else if (!/^[a-zA-Z0-9._-]+$/g.test(value)) {
-        return new Error('Please input a valid file name');
-      }
-      return true;
-    },
-    trigger: ['input', 'blur'],
-  },
-};
-
-function handleSynthesizeClick() {
-  formRef.value?.validate((err) => {
-    if (!err) {
-      _synthesize();
-    } else {
-      message.error('Invalid information');
-    }
-  });
-}
-
-function handlePlayClick() {}
-
-function handleImportClick() {
-  formRef.value?.validate(
-    (err) => {
-      if (!err) {
-        _import();
-      } else {
-        message.error('Invalid information');
-      }
-    },
-    (rule) => rule?.key === 'import',
-  );
-}
-
-function _synthesize() {
-  loadingRef.value = true;
-  const key = settings.azure.key;
-  const region = settings.azure.region;
-  const text = speechConfig.value.text;
-  const voice = speechConfig.value.voice;
-  const format = speechConfig.value.format;
-  const fileName = speechConfig.value.fileName;
-  const args = [key, region, text, voice, format, fileName];
-  ipcRenderer
-    .invoke('msspeech:synthesizeAudio', args)
-    .then((res) => {
-      message.success('Audio synthesize successful');
-    })
-    .catch((err) => {
-      message.error('Audio synthesize error');
-    })
-    .then(() => {
-      loadingRef.value = false;
-    });
-}
-
-function _import() {
-  const url = settings.wwise.url;
-  const fileName = speechConfig.value.fileName;
-  const args = [url, fileName];
-  ipcRenderer
-    .invoke('wwise:importAudio', args)
-    .then((res) => {
-      message.success('Import successful');
-    })
-    .catch((err) => {
-      message.error('Import faild');
-    });
-}
+import TextSpeech from '../components/speech/TextSpeech.vue';
+import SsmlSpeech from '../components/speech/SsmlSpeech.vue';
 </script>

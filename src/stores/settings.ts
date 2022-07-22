@@ -26,20 +26,16 @@ export const useSettings = defineStore('settings', {
   },
   actions: {
     async save() {
-      const fileName = 'settings';
       const data = toRaw(this.$state);
-      const args = [fileName, data];
-      ipcRenderer.invoke('file:writeJson', args);
+      ipcRenderer.invoke('file:writeJson', 'settings', data);
     },
     async load() {
-      const fileName = 'settings';
-      const args = [fileName];
       ipcRenderer
-        .invoke('file:readJson', args)
+        .invoke('file:readJson', 'settings')
         .then((res) => {
           this.$patch(res);
         })
-        .catch((err) => {
+        .catch(() => {
           this.save().catch();
         });
     },

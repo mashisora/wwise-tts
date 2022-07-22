@@ -30,7 +30,7 @@ const renderLink = (path: string, text: string) => {
   return () => h(RouterLink, { to: path }, () => text);
 };
 
-const menuOptions: MenuOption[] = [
+const menuOptions: Array<MenuOption> = [
   {
     label: renderLink('/', 'Home'),
     key: '/',

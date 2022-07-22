@@ -11,14 +11,14 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { NCard, NButton, NSpace } from 'naive-ui';
+import { ipcRenderer } from 'electron';
 import { useMessage } from 'naive-ui';
+import { NCard, NButton, NSpace } from 'naive-ui';
 
 import { useSettings } from '../stores/settings';
 
 import AzureSettings from '../components/settings/AzureSettings.vue';
 import WwiseSettings from '../components/settings/WwiseSettings.vue';
-import { ipcRenderer } from 'electron';
 
 const settings = useSettings();
 const message = useMessage();
@@ -34,10 +34,10 @@ function handleOpenFolderClick() {
 function handleSaveClick() {
   settings
     .save()
-    .then((res) => {
+    .then(() => {
       message.success('Settings Saved');
     })
-    .catch((err) => {
+    .catch(() => {
       message.error('Save Error');
     });
 }
