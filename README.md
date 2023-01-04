@@ -1,27 +1,22 @@
 # wwise-tts
 
-Generate speech and import to Wwise directly！
+Generate speech wave file and import to Wwise Authoring directly！
 
 A Text-to-Speech Application powered by Azure witch support anvanced options.
 
+## Build
 ```
 npm install
 npm run build
 ```
 
-for dev:
+## Dev
 
 ```
 npm run dev
 ```
 
-before commit:
-
-```
-npm run format
-```
-
-screenshot
+## Screenshots
 
 ![](public/screenshot01.png)
 
