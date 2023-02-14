@@ -1,43 +1,27 @@
-import { rmSync } from 'fs';
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import electron from 'vite-plugin-electron';
-import pkg from './package.json';
-
-rmSync('dist', { recursive: true, force: true }); // v14.14.0
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    electron({
-      main: {
-        entry: 'src-electron/main/index.ts',
-        vite: {
-          build: {
-            outDir: 'dist/main',
-          },
-        },
-      },
-      preload: {
-        input: {
-          // You can configure multiple preload here
-          index: `${__dirname}/src-electron/preload/index.ts`,
-        },
-        vite: {
-          build: {
-            // For debug
-            sourcemap: 'inline',
-            outDir: 'dist/preload',
-          },
-        },
-      },
-      // Enables use of Node.js API in the Renderer-process
-      renderer: {},
-    }),
-  ],
+  plugins: [vue()],
+
+  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+  // prevent vite from obscuring rust errors
+  clearScreen: false,
+  // tauri expects a fixed port, fail if that port is not available
   server: {
-    host: pkg.env.VITE_DEV_SERVER_HOST,
-    port: pkg.env.VITE_DEV_SERVER_PORT,
+    port: 1420,
+    strictPort: true,
+  },
+  // to make use of `TAURI_DEBUG` and other env variables
+  // https://tauri.studio/v1/api/config#buildconfig.beforedevcommand
+  envPrefix: ["VITE_", "TAURI_"],
+  build: {
+    // Tauri supports es2021
+    target: ["es2021", "chrome100", "safari13"],
+    // don't minify for debug builds
+    minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
+    // produce sourcemaps for debug builds
+    sourcemap: !!process.env.TAURI_DEBUG,
   },
 });

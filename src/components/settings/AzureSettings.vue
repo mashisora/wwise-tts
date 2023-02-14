@@ -5,20 +5,11 @@
         <NInput v-model:value="settings.key" :disabled="status.isConnected" />
       </NFormItem>
       <NFormItem path="region" label="Region">
-        <NSelect
-          v-model:value="settings.region"
-          :options="azureInfo.regions"
-          :disabled="status.isConnected"
-          filterable
-        />
+        <NSelect v-model:value="settings.region" :options="azureInfo.regions" :disabled="status.isConnected" filterable />
       </NFormItem>
       <NSpace justify="end">
-        <NButton type="error" ghost :disabled="!status.isConnected" @click="handleDisconnectClick">
-          Disconnect
-        </NButton>
-        <NButton type="primary" :loading="loadingRef" :disabled="status.isConnected" @click="handleConnectClick">
-          Connect
-        </NButton>
+        <NButton type="error" ghost :disabled="!status.isConnected" @click="handleDisconnectClick"> Disconnect </NButton>
+        <NButton type="primary" :loading="loadingRef" :disabled="status.isConnected" @click="handleConnectClick"> Connect </NButton>
       </NSpace>
     </NForm>
   </NCard>
