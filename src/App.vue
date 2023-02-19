@@ -1,31 +1,58 @@
-<template>
-  <AppProvider>
-    <NLayout position="absolute">
-      <!-- <Watermark /> -->
-      <NLayout has-sider position="absolute" style="bottom: 22px">
-        <NLayoutSider bordered width="200" :native-scrollbar="false">
-          <AppMenu />
-        </NLayoutSider>
-        <NLayoutContent content-style="padding: 24px" :native-scrollbar="false">
-          <RouterView v-slot="{ Component }">
-            <KeepAlive>
-              <component :is="Component" />
-            </KeepAlive>
-          </RouterView>
-        </NLayoutContent>
-      </NLayout>
-      <NLayoutFooter bordered position="absolute" style="height: 22px">
-        <AppStatus />
-      </NLayoutFooter>
-    </NLayout>
-  </AppProvider>
-</template>
+<script setup lang="ts">
+import { computed } from 'vue';
+import { NForm, NFormItem, NSelect, NInput, NSpace, NButton, NCollapse, NCollapseItem } from 'naive-ui';
 
-<script lang="ts" setup>
-import { KeepAlive } from 'vue';
-import { NLayout, NLayoutSider, NLayoutContent, NLayoutFooter } from 'naive-ui';
-import AppProvider from './components/AppProvider.vue';
-import AppMenu from './components/AppMenu.vue';
-import AppStatus from './components/AppStatus.vue';
-import Watermark from './components/Watermark.vue';
+import { NConfigProvider, NNotificationProvider, NGlobalStyle, useOsTheme, darkTheme } from 'naive-ui';
+import { AzureRegions } from './lib/azure';
+
+import TheSettings from './components/TheSettings.vue';
+
+const osTheme = useOsTheme();
+const theme = computed(() => (osTheme.value === 'dark' ? darkTheme : null));
+
+const options = AzureRegions.map((item) => {
+  return {
+    label: item.name,
+    value: item.id,
+  };
+});
 </script>
+
+<template>
+  <header>Azure TTS to Wwise</header>
+
+  <main>
+    <NConfigProvider :theme="theme">
+      <NGlobalStyle />
+      <NNotificationProvider>
+        <NSpace justify="center">
+          <NSpace vertical size="large">
+            <TheSettings />
+            <NForm ref="main" style="width: 400px">
+              <NFormItem path="text" label="Text">
+                <NInput type="textarea" :autosize="{ minRows: 3 }" />
+              </NFormItem>
+
+              <NFormItem path="voice" label="Voice">
+                <NSelect :options="options" />
+              </NFormItem>
+
+              <NFormItem path="role" label="Voice Role">
+                <NSelect :options="options" />
+              </NFormItem>
+
+              <NFormItem path="style" label="Voice Style">
+                <NSelect :options="options" />
+              </NFormItem>
+              <NSpace vertical>
+                <NButton style="width: 100%">Play</NButton>
+                <NButton type="info" style="width: 100%">Download</NButton>
+                <NButton type="primary" style="width: 100%">Import</NButton>
+              </NSpace>
+            </NForm>
+          </NSpace>
+        </NSpace>
+      </NNotificationProvider>
+    </NConfigProvider>
+  </main>
+</template>
